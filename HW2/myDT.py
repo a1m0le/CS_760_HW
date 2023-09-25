@@ -1,0 +1,200 @@
+import sys
+import math
+
+
+class DTNode:
+
+    def __init__(self, isleaf, label=None, feature_dim=None, testval=None):
+        self.isleaf = isleaf
+        self.label = label
+        self.feature_dim = feature_dim
+        self.testval = testval
+        self.left_node = None
+        self.right_node = None
+
+    def isleaf(self):
+        return self.isleaf()
+
+    def get_label(self):
+        if self.isleaf:
+            return self.label
+        else:
+            raise Exception("Attempting to get label from a non-leaf node")
+
+    def do_test(features):
+        if self.isleaf:
+            raise Exception("Should not test on a leaf node")
+        # get the value of the split happening at this node
+        feature_to_test = features[self.feature_dim]
+        if feature_to_test >= self.testval:
+            return self.left_node
+        else:
+            return self.right_node
+        
+
+class CandiSplitZeroException(Exception):
+     pass
+
+
+#given a list of instances, calculate its entropy
+def entropy_calc(instance_list):
+    # the instance list here would just be a list of (x_1, y_2, y)
+    #calculating entropy
+    # - sum over all y: P(y) * log_2(P(y))
+    count  = 0
+    for inst in instance_list:
+        #taking the advantages that labels are just numbers 0 or 1
+        count = count + inst[2]
+    P_y1 = count / len(instance_list)
+    P_y0 = 1 - P_y1 # better than recomputing the fraction
+    if P_y1 == 0:
+        P_y1_log = 0
+    else:
+        P_y1_log = math.log2(P_y1)
+    if P_y0 == 0:
+        P_y0_log = 0
+    else:
+        P_y0_log = math.log2(P_y0)
+    H_y = -1 * ( (P_y1 * P_y1_log) + (P_y0 * P_y0_log)) 
+    return H_y
+
+def info_gain_ratio_calc(instances, split):
+    # first get the split's entropy
+    split_left = split[2] + 1
+    split_right = len(instances[split[0]]) - split_left
+    if split_left == 0 or split_right == 0:
+        raise CandiSplitZeroException()
+    P_left = split_left / len(instances[split[0]])
+    P_right = split_right / len(instances[split[0]])
+    if P_left == 0:
+        P_left_log = 0
+    else:
+        P_left_log = math.log2(P_left)
+    if P_right == 0:
+        P_right_log = 0
+    else:
+        P_right_log = math.log2(P_right)
+    H_split = -1 * ((P_left * P_left_log) + (P_right * P_right_log))
+    # now the top part
+    H_Y = entropy_calc(instances[split[0]])
+    H_left = entropy_calc(instances[split[0]][0:split[2]+1])
+    H_right = entropy_calc(instances[split[0]][split[2]+1:])
+    H_Y_split = P_left * H_left + P_right * H_right
+    info_gain = H_Y - H_Y_split
+    gain_ratio = info_gain / H_split
+    return gain_ratio
+
+
+
+# return a list of candidate splits
+# each candidate split is of the format (feture_dimension, value, index)
+def FindCandidateSplits(instances):
+    # sort the first list of the instances using the first feature values as the key for each data point
+    list0 = instances[0]
+    list0.sort(key=lambda inst:inst[0], reverse=True)
+    # do the same thing for the second list using the second feature values
+    list1 = instances[1]
+    list1.sort(key=lambda inst:inst[1], reverse=True)
+
+    all_splits = []
+    # Find splits using the first feature
+    for i in range(0, len(list0)-1):
+        if list0[i][2] != list0[i+1][2]:
+            # anything greater than or equal to i would be a split
+            new_split = (0, list0[i][0], i)
+            all_splits.append(new_split)
+    for i in range(0, len(list1)-1):
+        if list1[i][2] != list1[i+1][2]:
+            new_split = (1, list1[i][1], i)
+            all_splits.append(new_split)
+    # return all the splits
+    return all_splits
+
+# Process the splits. Return an indicator on stopping or not and a split with largest gain_ratio.
+def process_splits(instances, all_splits):
+    if len(instances[0]) == 0 or len(instances[1]) == 0:
+        # Node is empty
+        return True, None, "Empty"
+    best_split = None
+    largest_gain_ratio = -1
+    for split in all_splits:
+        try:
+            gain_ratio = info_gain_ratio_calc(instances, split)
+            if gain_ratio > largest_gain_ratio:
+                largest_gain_ratio = gain_ratio
+                best_split = split
+        except CandiSplitZeroException:
+            # zero split entropy
+            pass
+    if largest_gain_ratio > 0:
+        return False, best_split, "New split with gain ratio"+str(largest_gain_ratio)
+    if largest_gain_ratio == 0:
+        return True, None, "Largest Gain Ratio is 0"
+    if largest_gain_ratio < 0:
+        return True, None, "All splits have entropy of zero"
+
+
+def GenerateSubTree(instances):
+    candi_splits = FindCandidateSplits(instances)
+    should_stop, split, message = process_splits(instances, candi_splits)
+    if should_stop:
+        if len(instances[0]) == 0:
+            label = 1
+        else:
+            one_count = 0
+            for inst in instances[0]:
+                if inst[2] == 1:
+                    one_count = one_count + 1
+            zero_count = len(instances[0]) - one_count
+            if one_count >= zero_count:
+                label = 1
+            else:
+                label = 0
+        new_leaf = DTNode(True, label=label)
+        return new_leaf
+    else:
+        #left_half, right_half, feature_dim, split_val = FindBestSplits(isntances, candi_splits)
+        left_list = instances[split[0]][0:split[2]+1]
+        right_list = instances[split[0]][split[2]+1:]
+        left_half = (left_list, left_list[:])
+        right_half = (right_list, right_list[:])
+        # find the children
+        left_node = GenerateSubTree(left_half)
+        right_node = GenerateSubTree(right_half)
+        # construct the internal node
+        new_internal = DTNode(False, feature_dim=split[0], testval=split[1])
+        new_internal.left_node = left_node
+        new_internal.right_node = right_node
+        return new_internal
+
+
+
+#structure of instances: 2 lists of tuples of (x_1, x_2, y)
+#list[0] is to be sorted using x_1
+#list[1] is to be sorted using x_2
+# this is to help future usages
+def LoadData(filename):
+    all_instances = []
+    list0 = []
+    list1 = []
+    with open(filename, "r") as input_file:
+        all_lines = input_file.readlines()
+        for line in all_lines:
+            comps = line.split()
+            x_1 = float(comps[0])
+            x_2 = float(comps[1])
+            y = int(comps[2])
+            new_instance = (x_1, x_2, y)
+            list0.append(new_instance)
+            list1.append(new_instance)
+    all_instances.append(list0)
+    all_instances.append(list1)
+    return all_instances
+
+
+if __name__ == "__main__":
+    if len(sys.argv) != 2:
+        print("Incorrect arg count")
+    filename = sys.argv[1]
+    all_instances = LoadData(filename) 
+    tree_root = GenerateSubTree(all_instances)
