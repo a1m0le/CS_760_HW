@@ -70,7 +70,7 @@ def info_gain_ratio_calc(instances, split):
     while split_left < len(instances[split[0]]) and instances[split[0]][split_left][split[0]] == split[1]:
     	split_left = split_left + 1
     split_right = len(instances[split[0]]) - split_left
-    print("Splite:"+str(split),end=", ")
+    print("Split:"+str(split),end=", ")
     
 
     P_left = split_left / len(instances[split[0]])
@@ -111,21 +111,60 @@ def FindCandidateSplits(instances):
     # sort the first list of the instances using the first feature values as the key for each data point
     list0 = instances[0]
     list0.sort(key=lambda inst:inst[0], reverse=True)
+    list0sets = []
+    for i in range(0, len(list0)):
+         if len(list0sets) == 0:
+              list0sets.append([list0[i][0], i, {list0[i][2]}])
+         else:
+             if list0sets[-1][0] == list0[i][0]:
+                 list0sets[-1][1] = i # update last seen address
+                 list0sets[-1][2].add(list0[i][2]) # add the seen labels.
+             else:
+                 list0sets.append([list0[i][0], i, {list0[i][2]}])
     # do the same thing for the second list using the second feature values
     list1 = instances[1]
     list1.sort(key=lambda inst:inst[1], reverse=True)
+    list1sets = []
+    for i in range(0, len(list1)):
+         if len(list1sets) == 0:
+              list1sets.append([list1[i][1], i, {list1[i][2]}])
+         else:
+             if list1sets[-1][0] == list1[i][1]:
+                 list1sets[-1][1] = i # update last seen address
+                 list1sets[-1][2].add(list1[i][2]) # add the seen labels.
+             else:
+                 list1sets.append([list1[i][1], i, {list1[i][2]}])
 
     all_splits = []
+    print(list0sets)
     # Find splits using the first feature
-    for i in range(0, len(list0)-1):
-        if list0[i][2] != list0[i+1][2]:
-            # anything greater than or equal to i would be a split
-            new_split = (0, list0[i][0], i)
-            all_splits.append(new_split)
-    for i in range(0, len(list1)-1):
-        if list1[i][2] != list1[i+1][2]:
-            new_split = (1, list1[i][1], i)
-            all_splits.append(new_split)
+    for i in range(0, len(list0sets)-1):
+        this_set = list0sets[i][2]
+        next_set = list0sets[i+1][2]
+        already_splited = False
+        for l1 in this_set:
+            if already_splited:
+            	break
+            for l2 in next_set:
+                if l1 != l2:
+            	    new_split = (0, list0sets[i][0], list0sets[i][1])
+            	    all_splits.append(new_split)
+            	    already_splited = True
+            	    break
+
+    for i in range(0, len(list1sets)-1):
+        this_set = list1sets[i][2]
+        next_set = list1sets[i+1][2]
+        already_splited = False
+        for l1 in this_set:
+            if already_splited:
+            	break
+            for l2 in next_set:
+                if l1 != l2:
+            	    new_split = (1, list1sets[i][0], list1sets[i][1])
+            	    all_splits.append(new_split)
+            	    already_splited = True
+            	    break
     # return all the splits
     return all_splits
 
