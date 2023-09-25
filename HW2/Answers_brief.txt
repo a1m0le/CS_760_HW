@@ -8,5 +8,27 @@ Q2:
 2 2 0
 
 Q3:
+ound 10 splits
+Splite:(0, 0.1, 0), Gain Ratio = 0.10051807676021828
+Splite:(0, 0.0, 1), Gain = 0.0
+Splite:(0, 0.0, 7), Gain = 0.0
+Splite:(0, 0.0, 8), Gain = 0.0
+Splite:(0, 0.0, 9), Gain = 0.0
+Splite:(1, 8.0, 0), Gain Ratio = 0.4301569161309807
+Splite:(1, 7.0, 1), Gain Ratio = 0.055953759631263526
+Splite:(1, 6.0, 2), Gain Ratio = 0.23609960614360798
+Splite:(1, 0.0, 8), Gain Ratio = 0.055953759631263526
+Splite:(1, -1.0, 9), Gain Ratio = 0.10051807676021828
+
+
+
+Q4:
+Braching left: X_0 >= 10.0
+       LABEL=1
+Braching right: X_0 < 10.0
+       Braching left: X_1 >= 3.0
+              LABEL=1
+       Braching right: X_1 < 3.0
+              LABEL=0
 
 

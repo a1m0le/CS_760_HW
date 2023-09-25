@@ -12,9 +12,6 @@ class DTNode:
         self.left_node = None
         self.right_node = None
 
-    def isleaf(self):
-        return self.isleaf()
-
     def get_label(self):
         if self.isleaf:
             return self.label
@@ -41,6 +38,7 @@ def debug_print(level, message):
     for i in range(0, level*5):
     	print(" ",end="")
     print(message)
+    pass
 
 
 #given a list of instances, calculate its entropy
@@ -72,8 +70,8 @@ def info_gain_ratio_calc(instances, split):
     while split_left < len(instances[split[0]]) and instances[split[0]][split_left][split[0]] == split[1]:
     	split_left = split_left + 1
     split_right = len(instances[split[0]]) - split_left
-    if split_left == 0 or split_right == 0:
-        raise CandiSplitZeroException()
+    print("Splite:"+str(split),end=", ")
+    
 
     P_left = split_left / len(instances[split[0]])
     P_right = split_right / len(instances[split[0]])
@@ -88,11 +86,21 @@ def info_gain_ratio_calc(instances, split):
     H_split = -1 * ((P_left * P_left_log) + (P_right * P_right_log))
     # now the top part
     H_Y = entropy_calc(instances[split[0]])
-    H_left = entropy_calc(instances[split[0]][0:split_left])
-    H_right = entropy_calc(instances[split[0]][split_left:])
+    if split_left == 0:
+        H_left = 0
+    else:
+        H_left = entropy_calc(instances[split[0]][0:split_left])
+    if split_right == 0:
+        H_right = 0
+    else:
+        H_right = entropy_calc(instances[split[0]][split_left:])
     H_Y_split = P_left * H_left + P_right * H_right
     info_gain = H_Y - H_Y_split
+    if H_split == 0:
+        print("Gain = "+str(info_gain))
+        raise CandiSplitZeroException()
     gain_ratio = info_gain / H_split
+    print("Gain Ratio = "+str(gain_ratio))
     return gain_ratio
 
 
@@ -213,9 +221,34 @@ def LoadData(filename):
     return all_instances
 
 
+
+def print_tree_node(subroot, depth):
+    if subroot is None:
+    	raise Exception("no leaf?")
+    for i in range(0, depth*7):
+    	print(" ",end="")
+    if subroot.isleaf:
+    	print("LABEL="+str(subroot.get_label()))
+    else:
+        print("Braching left: X_"+str(subroot.feature_dim)+" >= "+str(subroot.testval))
+        print_tree_node(subroot.left_node, depth+1)
+        for i in range(0, depth*7):
+            print(" ",end="")
+        print("Braching right: X_"+str(subroot.feature_dim)+" < "+str(subroot.testval))
+        print_tree_node(subroot.right_node, depth+1)
+
+    
+
+
 if __name__ == "__main__":
     if len(sys.argv) != 2:
         print("Incorrect arg count")
     filename = sys.argv[1]
     all_instances = LoadData(filename) 
     tree_root = GenerateSubTree(all_instances, 0)
+    print()
+    print()
+    print()
+    print_tree_node(tree_root,0)
+    
+    
