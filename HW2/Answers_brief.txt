@@ -1,0 +1,12 @@
+Q1:
+Because any split will have an entropy of 0
+
+Q2:
+1 2 1
+2 1 1
+1 1 0
+2 2 0
+
+Q3:
+
+

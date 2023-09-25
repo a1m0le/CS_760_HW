@@ -36,6 +36,13 @@ class CandiSplitZeroException(Exception):
      pass
 
 
+
+def debug_print(level, message):
+    for i in range(0, level*5):
+    	print(" ",end="")
+    print(message)
+
+
 #given a list of instances, calculate its entropy
 def entropy_calc(instance_list):
     # the instance list here would just be a list of (x_1, y_2, y)
@@ -61,9 +68,13 @@ def entropy_calc(instance_list):
 def info_gain_ratio_calc(instances, split):
     # first get the split's entropy
     split_left = split[2] + 1
+    # continue finding all values that can satisfy it
+    while split_left < len(instances[split[0]]) and instances[split[0]][split_left][split[0]] == split[1]:
+    	split_left = split_left + 1
     split_right = len(instances[split[0]]) - split_left
     if split_left == 0 or split_right == 0:
         raise CandiSplitZeroException()
+
     P_left = split_left / len(instances[split[0]])
     P_right = split_right / len(instances[split[0]])
     if P_left == 0:
@@ -77,8 +88,8 @@ def info_gain_ratio_calc(instances, split):
     H_split = -1 * ((P_left * P_left_log) + (P_right * P_right_log))
     # now the top part
     H_Y = entropy_calc(instances[split[0]])
-    H_left = entropy_calc(instances[split[0]][0:split[2]+1])
-    H_right = entropy_calc(instances[split[0]][split[2]+1:])
+    H_left = entropy_calc(instances[split[0]][0:split_left])
+    H_right = entropy_calc(instances[split[0]][split_left:])
     H_Y_split = P_left * H_left + P_right * H_right
     info_gain = H_Y - H_Y_split
     gain_ratio = info_gain / H_split
@@ -127,17 +138,21 @@ def process_splits(instances, all_splits):
             # zero split entropy
             pass
     if largest_gain_ratio > 0:
-        return False, best_split, "New split with gain ratio"+str(largest_gain_ratio)
+        return False, best_split, " = New split with gain ratio: "+str(largest_gain_ratio)
     if largest_gain_ratio == 0:
         return True, None, "Largest Gain Ratio is 0"
     if largest_gain_ratio < 0:
         return True, None, "All splits have entropy of zero"
 
 
-def GenerateSubTree(instances):
+def GenerateSubTree(instances, level):
+    debug_print(level, "=========================")
+    debug_print(level, "Processing: "+str(len(instances[0]))+" instances")
     candi_splits = FindCandidateSplits(instances)
+    debug_print(level, "Found "+str(len(candi_splits))+" splits")
     should_stop, split, message = process_splits(instances, candi_splits)
     if should_stop:
+        debug_print(level, "Stopping due to: "+message)
         if len(instances[0]) == 0:
             label = 1
         else:
@@ -151,16 +166,22 @@ def GenerateSubTree(instances):
             else:
                 label = 0
         new_leaf = DTNode(True, label=label)
+        debug_print(level, "Labeled as: "+str(label))
         return new_leaf
     else:
         #left_half, right_half, feature_dim, split_val = FindBestSplits(isntances, candi_splits)
-        left_list = instances[split[0]][0:split[2]+1]
-        right_list = instances[split[0]][split[2]+1:]
+        debug_print(level, str(split)+message)
+        split_left = split[2] + 1
+    	# continue finding all values that can satisfy it
+        while split_left < len(instances[split[0]]) and instances[split[0]][split_left][split[0]] == split[1]:
+    	    split_left = split_left + 1
+        left_list = instances[split[0]][0:split_left]
+        right_list = instances[split[0]][split_left:]
         left_half = (left_list, left_list[:])
         right_half = (right_list, right_list[:])
         # find the children
-        left_node = GenerateSubTree(left_half)
-        right_node = GenerateSubTree(right_half)
+        left_node = GenerateSubTree(left_half, level+1)
+        right_node = GenerateSubTree(right_half, level+1)
         # construct the internal node
         new_internal = DTNode(False, feature_dim=split[0], testval=split[1])
         new_internal.left_node = left_node
@@ -197,4 +218,4 @@ if __name__ == "__main__":
         print("Incorrect arg count")
     filename = sys.argv[1]
     all_instances = LoadData(filename) 
-    tree_root = GenerateSubTree(all_instances)
+    tree_root = GenerateSubTree(all_instances, 0)
