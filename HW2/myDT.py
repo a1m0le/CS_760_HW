@@ -353,7 +353,6 @@ if __name__ == "__main__":
     if len(sys.argv) < 2:
         print("Incorrect arg count")
     filename = sys.argv[1]
-    test_file_name = sys.argv[2]
     all_instances = LoadData(filename) 
     tree_root = GenerateSubTree(all_instances, 0)
     print()
