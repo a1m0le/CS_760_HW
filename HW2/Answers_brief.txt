@@ -35,6 +35,220 @@ Y = 1 if X_0 >= 10 or (X_0 < 10 and X_1 >= 3)
 Y = 0 if (X_0 < 10 and X_1 < 3)
 
 if x_0 >= 10 then Y = 1
-if x_0 < 10 and x_1 >= 3 then Y = 1
-if x_0 < 10 and x_1 < 3 then Y = 1
+otherwise if x_0 < 10 and x_1 >= 3 then Y = 1
+otherwise if x_0 < 10 and x_1 < 3 then Y = 1
 
+
+
+
+Q5:
+Braching left: X_1 >= 0.201829
+       LABEL=1
+Braching right: X_1 < 0.201829
+       LABEL=0
+
+Braching left: X_1 >= 0.201829
+       LABEL=1
+Braching right: X_1 < 0.201829
+       LABEL=0
+
+
+
+
+Braching left: X_0 >= 0.533076
+       Braching left: X_1 >= 0.228007
+              Braching left: X_1 >= 0.424906
+                     LABEL=1
+              Braching right: X_1 < 0.424906
+                     Braching left: X_0 >= 0.708127
+                            LABEL=1
+                     Braching right: X_0 < 0.708127
+                            Braching left: X_1 >= 0.32625
+                                   Braching left: X_0 >= 0.595471
+                                          Braching left: X_0 >= 0.646007
+                                                 LABEL=1
+                                          Braching right: X_0 < 0.646007
+                                                 Braching left: X_1 >= 0.403494
+                                                        LABEL=1
+                                                 Braching right: X_1 < 0.403494
+                                                        LABEL=0
+                                   Braching right: X_0 < 0.595471
+                                          LABEL=0
+                            Braching right: X_1 < 0.32625
+                                   LABEL=0
+       Braching right: X_1 < 0.228007
+              Braching left: X_0 >= 0.887224
+                     Braching left: X_1 >= 0.037708
+                            Braching left: X_1 >= 0.082895
+                                   LABEL=1
+                            Braching right: X_1 < 0.082895
+                                   Braching left: X_0 >= 0.960783
+                                          LABEL=1
+                                   Braching right: X_0 < 0.960783
+                                          LABEL=0
+                     Braching right: X_1 < 0.037708
+                            LABEL=0
+              Braching right: X_0 < 0.887224
+                     Braching left: X_0 >= 0.850316
+                            Braching left: X_1 >= 0.169053
+                                   LABEL=1
+                            Braching right: X_1 < 0.169053
+                                   LABEL=0
+                     Braching right: X_0 < 0.850316
+                            LABEL=0
+Braching right: X_0 < 0.533076
+       Braching left: X_1 >= 0.88635
+              Braching left: X_0 >= 0.041245
+                     Braching left: X_0 >= 0.104043
+                            LABEL=1
+                     Braching right: X_0 < 0.104043
+                            Braching left: X_0 >= 0.07642
+                                   LABEL=0
+                            Braching right: X_0 < 0.07642
+                                   LABEL=1
+              Braching right: X_0 < 0.041245
+                     LABEL=0
+       Braching right: X_1 < 0.88635
+              Braching left: X_1 >= 0.691474
+                     Braching left: X_0 >= 0.254049
+                            LABEL=1
+                     Braching right: X_0 < 0.254049
+                            Braching left: X_0 >= 0.191915
+                                   Braching left: X_1 >= 0.792752
+                                          LABEL=1
+                                   Braching right: X_1 < 0.792752
+                                          LABEL=0
+                            Braching right: X_0 < 0.191915
+                                   Braching left: X_1 >= 0.864128
+                                          Braching left: X_0 >= 0.144781
+                                                 LABEL=1
+                                          Braching right: X_0 < 0.144781
+                                                 LABEL=0
+                                   Braching right: X_1 < 0.864128
+                                          LABEL=0
+              Braching right: X_1 < 0.691474
+                     Braching left: X_1 >= 0.534979
+                            Braching left: X_0 >= 0.426073
+                                   LABEL=1
+                            Braching right: X_0 < 0.426073
+                                   Braching left: X_0 >= 0.409972
+                                          Braching left: X_0 >= 0.417579
+                                                 LABEL=0
+                                          Braching right: X_0 < 0.417579
+                                                 LABEL=1
+                                   Braching right: X_0 < 0.409972
+                                          Braching left: X_0 >= 0.393227
+                                                 Braching left: X_0 >= 0.39583
+                                                        LABEL=0
+                                                 Braching right: X_0 < 0.39583
+                                                        LABEL=1
+                                          Braching right: X_0 < 0.393227
+                                                 LABEL=0
+                     Braching right: X_1 < 0.534979
+                            LABEL=0
+
+
+
+
+Braching left: X_0 >= 0.533076
+       Braching left: X_1 >= 0.228007
+              Braching left: X_1 >= 0.424906
+                     LABEL=1
+              Braching right: X_1 < 0.424906
+                     Braching left: X_0 >= 0.708127
+                            LABEL=1
+                     Braching right: X_0 < 0.708127
+                            Braching left: X_1 >= 0.32625
+                                   Braching left: X_0 >= 0.595471
+                                          Braching left: X_0 >= 0.646007
+                                                 LABEL=1
+                                          Braching right: X_0 < 0.646007
+                                                 Braching left: X_1 >= 0.403494
+                                                        LABEL=1
+                                                 Braching right: X_1 < 0.403494
+                                                        LABEL=0
+                                   Braching right: X_0 < 0.595471
+                                          LABEL=0
+                            Braching right: X_1 < 0.32625
+                                   LABEL=0
+       Braching right: X_1 < 0.228007
+              Braching left: X_0 >= 0.887224
+                     Braching left: X_1 >= 0.037708
+                            Braching left: X_1 >= 0.082895
+                                   LABEL=1
+                            Braching right: X_1 < 0.082895
+                                   Braching left: X_0 >= 0.960783
+                                          LABEL=1
+                                   Braching right: X_0 < 0.960783
+                                          LABEL=0
+                     Braching right: X_1 < 0.037708
+                            LABEL=0
+              Braching right: X_0 < 0.887224
+                     Braching left: X_0 >= 0.850316
+                            Braching left: X_1 >= 0.169053
+                                   LABEL=1
+                            Braching right: X_1 < 0.169053
+                                   LABEL=0
+                     Braching right: X_0 < 0.850316
+                            LABEL=0
+Braching right: X_0 < 0.533076
+       Braching left: X_1 >= 0.88635
+              Braching left: X_0 >= 0.041245
+                     Braching left: X_0 >= 0.104043
+                            LABEL=1
+                     Braching right: X_0 < 0.104043
+                            Braching left: X_0 >= 0.07642
+                                   LABEL=0
+                            Braching right: X_0 < 0.07642
+                                   LABEL=1
+              Braching right: X_0 < 0.041245
+                     LABEL=0
+       Braching right: X_1 < 0.88635
+              Braching left: X_1 >= 0.691474
+                     Braching left: X_0 >= 0.254049
+                            LABEL=1
+                     Braching right: X_0 < 0.254049
+                            Braching left: X_0 >= 0.191915
+                                   Braching left: X_1 >= 0.792752
+                                          LABEL=1
+                                   Braching right: X_1 < 0.792752
+                                          LABEL=0
+                            Braching right: X_0 < 0.191915
+                                   Braching left: X_1 >= 0.864128
+                                          Braching left: X_0 >= 0.144781
+                                                 LABEL=1
+                                          Braching right: X_0 < 0.144781
+                                                 LABEL=0
+                                   Braching right: X_1 < 0.864128
+                                          LABEL=0
+              Braching right: X_1 < 0.691474
+                     Braching left: X_1 >= 0.534979
+                            Braching left: X_0 >= 0.426073
+                                   LABEL=1
+                            Braching right: X_0 < 0.426073
+                                   Braching left: X_0 >= 0.409972
+                                          Braching left: X_0 >= 0.417579
+                                                 LABEL=0
+                                          Braching right: X_0 < 0.417579
+                                                 LABEL=1
+                                   Braching right: X_0 < 0.409972
+                                          Braching left: X_0 >= 0.393227
+                                                 Braching left: X_0 >= 0.39583
+                                                        LABEL=0
+                                                 Braching right: X_0 < 0.39583
+                                                        LABEL=1
+                                          Braching right: X_0 < 0.393227
+                                                 LABEL=0
+                     Braching right: X_1 < 0.534979
+                            LABEL=0
+
+
+
+
+Q7:
+set name   :   n,   node_count,   err_n
+D32 : 32,    13,  0.16095132743362828
+D128 : 128,    25,  0.10176991150442483
+D512 : 512,    67,  0.052544247787610576
+D2048 : 2048,    137,  0.039269911504424826
+D8192 : 8192,    279,  0.01603982300884954
