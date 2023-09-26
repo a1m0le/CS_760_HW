@@ -1,5 +1,12 @@
 import sys
 import math
+import numpy as np
+from numpy import random
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
+
+ALPHA = 0.5
 
 
 class DTNode:
@@ -18,7 +25,7 @@ class DTNode:
         else:
             raise Exception("Attempting to get label from a non-leaf node")
 
-    def do_test(features):
+    def do_test(self, features):
         if self.isleaf:
             raise Exception("Should not test on a leaf node")
         # get the value of the split happening at this node
@@ -238,17 +245,132 @@ def print_tree_node(subroot, depth):
         print_tree_node(subroot.right_node, depth+1)
 
     
+# range means the range of the corresponding feature value that will be classified to
+def add_decision_rect(subroot, x1_range, x2_range, axes):
+    if subroot is None:
+        raise Exception("no leaf?")
+    if subroot.isleaf:
+        # it is a leaf. then we can draw the rectangle
+        # the bases will be the left value of both ranges
+        x = x1_range[0]
+        y = x2_range[0]
+        width = x1_range[1] - x1_range[0]
+        height = x2_range[1] - x2_range[0]
+        if subroot.get_label() == 0:
+            color = "red"
+        else:
+            color = "green"
+        rect = patches.Rectangle((x,y),width,height, color=color, alpha=ALPHA, linewidth=0)
+        axes.add_patch(rect)
+    else:
+        # it is not a leaf. we are spliting.
+        # firstly the left leaf
+        if subroot.feature_dim == 0:
+            # splitting x_1 range
+            val = subroot.testval
+            new_x1_range = [val, x1_range[1]] #TODO Is this logic correct?
+            assert(val >= x1_range[0])
+            add_decision_rect(subroot.left_node, new_x1_range, x2_range[:], axes)
+        else:
+            val = subroot.testval
+            new_x2_range = [val, x2_range[1]] #TODO Is this logic correct?
+            assert(val >= x2_range[0])
+            add_decision_rect(subroot.left_node, x1_range[:], new_x2_range, axes)
+        # now the right leaf
+        if subroot.feature_dim == 0:
+            # splitting x_1 range
+            val = subroot.testval
+            new_x1_range = [x1_range[0], val] #TODO Is this logic correct?
+            assert(val <= x1_range[1])
+            add_decision_rect(subroot.right_node, new_x1_range, x2_range[:], axes)
+        else:
+            val = subroot.testval
+            new_x2_range = [x2_range[0], val] #TODO Is this logic correct?
+            assert(val <= x2_range[1])
+            add_decision_rect(subroot.right_node, x1_range[:], new_x2_range, axes)
+
+
+
+def make_plot(dp_list, tree_root, filename):
+    # firstly make a scatter plot
+    fig, axes = plt.subplots()
+    fig.set_figheight(9)
+    fig.set_figwidth(16)
+
+    # process points
+    x_1_y1 = []
+    x_2_y1 = []
+    for inst in dp_list:
+        if inst[2] == 1:
+            x_1_y1.append(inst[0])
+            x_2_y1.append(inst[1])
+
+    x_1_y0 = []
+    x_2_y0 = []
+    for inst in dp_list:
+        if inst[2] == 0:
+            x_1_y0.append(inst[0])
+            x_2_y0.append(inst[1])
+    x1_max = max(max(x_1_y0),max(x_1_y1)) + 0.075
+    x1_min = min(min(x_1_y0),min(x_1_y1)) - 0.075
+    x2_max = max(max(x_2_y0),max(x_2_y1)) + 0.075
+    x2_min = min(min(x_2_y0),min(x_2_y1)) - 0.075
+    axes.set_ylim(x2_min,x2_max)
+    axes.set_xlim(x1_min,x1_max)
+    axes.scatter(x_1_y0, x_2_y0, color = "red")
+    axes.scatter(x_1_y1, x_2_y1, color = "green")
+
+
+    add_decision_rect(tree_root, [x1_min,x1_max],[x2_min,x2_max],axes)
+
+    # # rect = patches.Rectangle((x1_min,x2_min),0.6,0.3,color="red", alpha=ALPHA, linewidth=0)
+    # # rect2 = patches.Rectangle((0.6,0.6),0.2,0.2, color="black", alpha=ALPHA, linewidth=0)
+    # axes.add_patch(rect)
+    # axes.add_patch(rect2)
+    #plt.show()
+    plt.savefig("plot_"+filename+".png")
+
+
+
+
+
+# return True if the decision meets expected label
+def test_decision(feature, expected_label, root):
+    node = root
+    while not node.isleaf:
+     next_ndoe = node.do_test(feature)
+     node = next_ndoe
+    return node.get_label() == expected_label 
+
+
+
+
+
+
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
+    if len(sys.argv) < 2:
         print("Incorrect arg count")
     filename = sys.argv[1]
+    test_file_name = sys.argv[2]
     all_instances = LoadData(filename) 
     tree_root = GenerateSubTree(all_instances, 0)
     print()
     print()
     print()
     print_tree_node(tree_root,0)
+    #make_plot(all_instances[0], tree_root,filename)
+    # tester
+    print()
+    print()
+    print()
+    for inst in all_instances[0]:
+        feature = (inst[0], inst[1])
+        expected_label = inst[2]
+        res = test_decision(feature, expected_label, tree_root)
+        if not res:
+            print(str(inst)+" is classified incorrectly")
+
     
     

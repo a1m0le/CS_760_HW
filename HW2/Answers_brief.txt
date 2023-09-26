@@ -31,4 +31,10 @@ Braching right: X_0 < 10.0
        Braching right: X_1 < 3.0
               LABEL=0
 
+Y = 1 if X_0 >= 10 or (X_0 < 10 and X_1 >= 3)
+Y = 0 if (X_0 < 10 and X_1 < 3)
+
+if x_0 >= 10 then Y = 1
+if x_0 < 10 and x_1 >= 3 then Y = 1
+if x_0 < 10 and x_1 < 3 then Y = 1
 
