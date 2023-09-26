@@ -7,6 +7,10 @@ import matplotlib.patches as patches
 import copy
 
 
+
+from sklearn import tree
+
+
 ALPHA = 0.5
 
 
@@ -368,6 +372,50 @@ def test_set_error(tree_root, test_set):
 
 
 
+def use_sklearn(training_sets, test_set):
+    print()
+    print()
+    print(" SKlearn output:")
+    print("set name   :   n,   node_count,   err_n")
+    curve_plot_x = []
+    curve_plot_y = []
+    testX = []
+    testY = []
+    for inst in test_set:
+            dp = [inst[0],inst[1]]
+            testX.append(dp)
+            testY.append(inst[2])
+    for i in range(0, 5):
+        train_set_size = int(32 * math.pow(4,i))
+        bundle = training_sets[i]
+        X = []
+        Y = []
+        for inst in bundle:
+            dp = [inst[0],inst[1]]
+            X.append(dp)
+            Y.append(inst[2])
+        sklearn_tree = tree.DecisionTreeClassifier()
+        sklearn_tree = sklearn_tree.fit(X, Y)
+        pred_Y = sklearn_tree.predict(testX)
+        assert(len(pred_Y) == len(testY))
+        correct_count = 0
+        for i in range(0, len(pred_Y)):
+            if pred_Y[i] == testY[i]:
+                correct_count = correct_count + 1
+        err_n = 1 - (correct_count / len(pred_Y))
+        node_count = sklearn_tree.tree_.node_count
+        print("D"+str(train_set_size)+" : "+str(train_set_size)+",    "+str(node_count)+",  "+str(err_n))
+        curve_plot_x.append(train_set_size)
+        curve_plot_y.append(err_n)
+    fig, axes = plt.subplots()
+    fig.set_figheight(9)
+    fig.set_figwidth(16)
+    axes.plot(curve_plot_x, curve_plot_y, linestyle='-', marker='*', color="orange")
+    plt.savefig("Sklearn_learning_cruve.png")
+
+
+
+
 if __name__ == "__main__":
     filename = "Dbig.txt"
     inst_list = LoadData(filename) 
@@ -403,10 +451,10 @@ if __name__ == "__main__":
     fig, axes = plt.subplots()
     fig.set_figheight(9)
     fig.set_figwidth(16)
-    axes.plot(curve_plot_x, curve_plot_y, linestyle=':', marker='*')
+    axes.plot(curve_plot_x, curve_plot_y, linestyle='-', marker='*')
     plt.savefig("Q7_learning_cruve.png")
 
-
+    use_sklearn(training_sets, test_set)
 
     # tree_root = GenerateSubTree(all_instances, 0)
     # print()
