@@ -41,3 +41,4 @@ These are the samed test and training data to compare the output in different ex
 ## Outputs:
 
 folder with outputs from running the code such as printed text and graphs.
+some outputs might not be here and are still in the code folder
