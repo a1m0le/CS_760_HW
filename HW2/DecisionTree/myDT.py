@@ -6,6 +6,8 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 
 
+import graphviz
+
 ALPHA = 0.5
 
 
@@ -229,34 +231,57 @@ def LoadData(filename):
 
 
 
-def print_tree_node(subroot, depth):
-    if subroot is None:
-    	raise Exception("no leaf?")
-    for i in range(0, depth*7):
-    	print(" ",end="")
-    if subroot.isleaf:
-    	print("LABEL="+str(subroot.get_label()))
-    else:
-        print("Braching left: X_"+str(subroot.feature_dim)+" >= "+str(subroot.testval))
-        print_tree_node(subroot.left_node, depth+1)
-        for i in range(0, depth*7):
-            print(" ",end="")
-        print("Braching right: X_"+str(subroot.feature_dim)+" < "+str(subroot.testval))
-        print_tree_node(subroot.right_node, depth+1)
-
-# # Use https://csacademy.com/app/graph_editor/
 # def print_tree_node(subroot, depth):
 #     if subroot is None:
-#         raise Exception("no leaf?")
+#     	raise Exception("no leaf?")
+#     for i in range(0, depth*7):
+#     	print(" ",end="")
 #     if subroot.isleaf:
-#         return str(subroot.label)
+#     	print("LABEL="+str(subroot.get_label()))
 #     else:
-#         text = "x_"+str(subroot.feature_dim)+">="+str(subroot.testval)
-#         left_text = print_tree_node(subroot.left_node, depth+1)
-#         print(text+" "+left_text+" Yes")
-#         right_text = print_tree_node(subroot.right_node, depth+1)
-#         print(text+" "+right_text+" No")
-#         return text
+#         print("Braching left: X_"+str(subroot.feature_dim)+" >= "+str(subroot.testval))
+#         print_tree_node(subroot.left_node, depth+1)
+#         for i in range(0, depth*7):
+#             print(" ",end="")
+#         print("Braching right: X_"+str(subroot.feature_dim)+" < "+str(subroot.testval))
+#         print_tree_node(subroot.right_node, depth+1)
+
+# Use https://csacademy.com/app/graph_editor/
+def print_tree_node(subroot, depth):
+    if subroot is None:
+        raise Exception("no leaf?")
+    if subroot.isleaf:
+        return str(subroot.label) + ":"+str(id(subroot))
+    else:
+        text = "x_"+str(subroot.feature_dim)+">="+str(subroot.testval)
+        left_text = print_tree_node(subroot.left_node, depth+1)
+        print(text+" "+left_text+" Yes")
+        right_text = print_tree_node(subroot.right_node, depth+1)
+        print(text+" "+right_text+" No")
+        return text
+
+
+
+def graph_tree(subroot):
+    graph = graphviz.Digraph()
+    graph_tree_recur(subroot, graph)
+    return graph
+
+def graph_tree_recur(subroot, graph):
+    if subroot is None:
+        raise Exception("no leaf?")
+    if subroot.isleaf:
+        graph.node(str(id(subroot)), str(subroot.label))
+        return str(id(subroot))
+    else:
+        text = "x_"+str(subroot.feature_dim)+">="+str(subroot.testval)
+        graph.node(str(id(subroot)), text)
+        left_node_name = graph_tree_recur(subroot.left_node, graph)
+        graph.edge(str(id(subroot)),left_node_name ,"Yes")
+
+        right_node_name = graph_tree_recur(subroot.right_node, graph)
+        graph.edge(str(id(subroot)),right_node_name ,"No")
+        return str(id(subroot))
 
     
 # range means the range of the corresponding feature value that will be classified to
@@ -372,8 +397,10 @@ if __name__ == "__main__":
     print()
     print()
     print()
-    print_tree_node(tree_root,0)
-    #make_plot(all_instances[0], tree_root,filename)
+    #print_tree_node(tree_root,0)
+    graph = graph_tree(tree_root)
+    graph.render(filename+".pdf", view=True)
+    make_plot(all_instances[0], tree_root,filename)
     # tester
     print()
     print()
