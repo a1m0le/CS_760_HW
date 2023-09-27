@@ -244,6 +244,20 @@ def print_tree_node(subroot, depth):
         print("Braching right: X_"+str(subroot.feature_dim)+" < "+str(subroot.testval))
         print_tree_node(subroot.right_node, depth+1)
 
+# # Use https://csacademy.com/app/graph_editor/
+# def print_tree_node(subroot, depth):
+#     if subroot is None:
+#         raise Exception("no leaf?")
+#     if subroot.isleaf:
+#         return str(subroot.label)
+#     else:
+#         text = "x_"+str(subroot.feature_dim)+">="+str(subroot.testval)
+#         left_text = print_tree_node(subroot.left_node, depth+1)
+#         print(text+" "+left_text+" Yes")
+#         right_text = print_tree_node(subroot.right_node, depth+1)
+#         print(text+" "+right_text+" No")
+#         return text
+
     
 # range means the range of the corresponding feature value that will be classified to
 def add_decision_rect(subroot, x1_range, x2_range, axes):

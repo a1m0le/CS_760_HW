@@ -3,7 +3,7 @@ import random
 
 
 a = 0
-b = 24
+b = 20
 
 with open("LI_train.txt","w+") as train_f:
     for i in range(0, 100):
