@@ -10,7 +10,7 @@ Xs = []
 Ys = []
 
 
-plt.figure(figsize=(16, 10))
+plt.figure(figsize=(8, 5))
 
 with open("LI_train.txt", "r") as input_file:
         all_lines = input_file.readlines()
@@ -43,16 +43,16 @@ f = Polynomial(li_coef)
 
 
 x_range = np.arange(min(nXs), max(nXs), 0.01)
-#plt.xlim(min(nXs),max(nXs))
-#plt.ylim(-1.5, 1.5)
+plt.xlim(min(nXs),max(nXs))
+plt.ylim(-1.5, 1.5)
 
 plt.scatter(Xs, Ys)
 plt.scatter(nXs, Ys)
-plt.plot(x_range, f(x_range))
+plt.plot(x_range, f(x_range), linewidth=0.5, color="green")
 
 
 plt.title("std = "+str(std))
-plt.show()
+plt.savefig("std_"+str(std)+".png")
 
 
 # compute the traing erros
@@ -65,9 +65,6 @@ for i in range(0, len(Xs)):
 
 train_diffs = np.array(train_diffs)
 train_mse_error = np.square(train_diffs).mean()
-print("std = "+str(std))
-print("train_error: "+str(train_mse_error))
-
 
 tXs = []
 tYs = []
@@ -91,5 +88,4 @@ for i in range(0, len(tXs)):
 
 test_diffs = np.array(test_diffs)
 test_mse_error = np.square(test_diffs).mean()
-print(" test_error: "+str(test_mse_error))
-print()
+print(str(std)+","+str(train_mse_error)+","+str(test_mse_error))
