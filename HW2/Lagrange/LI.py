@@ -22,6 +22,7 @@ with open("LI_train.txt", "r") as input_file:
             Ys.append(y)
 
 nXs = []
+nYs = []
 
 add_noise = False
 std = 0
@@ -33,10 +34,14 @@ for x in Xs:
     if add_noise:
         new_x = x + random.normal(0,std)
         nXs.append(new_x)
+        nYs.append(math.sin(new_x))
     else:
         nXs.append(x)
 
-li_poly = lagrange(nXs, Ys)
+if not add_noise:
+    nYs = Ys[:]
+
+li_poly = lagrange(nXs, nYs)
 li_coef = li_poly.coef[::-1]
 f = Polynomial(li_coef)
 #print(f)
@@ -47,7 +52,7 @@ plt.xlim(min(nXs),max(nXs))
 plt.ylim(-1.5, 1.5)
 
 plt.scatter(Xs, Ys)
-plt.scatter(nXs, Ys)
+plt.scatter(nXs, nYs)
 plt.plot(x_range, f(x_range), linewidth=0.5, color="green")
 
 
