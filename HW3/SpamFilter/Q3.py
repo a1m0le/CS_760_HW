@@ -22,8 +22,8 @@ def run_cross_validation(fold_no, test_range, logi):
 if __name__=="__main__":
 
     if len(sys.argv) < 3:
-        size = 0.1
-        maxstep = 100
+        size = 2
+        maxstep = 200 # This is the best we got so far in terms of results and runtime
     else:
         size = float(sys.argv[1])
         maxstep = int(sys.argv[2])

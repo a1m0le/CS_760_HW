@@ -1,0 +1,35 @@
+xu@xu-virtual-machine:~/760/CS_760_HW/HW3/SpamFilter$ python3 Q3.py 2 200
+/home/xu/760/CS_760_HW/HW3/SpamFilter/myLogi.py:56: RuntimeWarning: overflow encountered in exp
+  sigmoid = 1 / (1 + np.exp(-1 * theta_T_x))
+/home/xu/760/CS_760_HW/HW3/SpamFilter/myLogi.py:112: RuntimeWarning: overflow encountered in exp
+  sigmoid = 1 / (1 + np.exp(-1 * theta_T_x))
+Fold No.1:
+     Accuracy = 0.848
+    Precision = 0.7567567567567568
+       Recall = 0.6877192982456141
+
+
+Fold No.2:
+     Accuracy = 0.8451548451548452
+    Precision = 0.7629310344827587
+       Recall = 0.6389891696750902
+
+
+Fold No.3:
+     Accuracy = 0.8451548451548452
+    Precision = 0.825
+       Recall = 0.5789473684210527
+
+
+Fold No.4:
+     Accuracy = 0.8321678321678322
+    Precision = 0.752
+       Recall = 0.6394557823129252
+
+
+Fold No.5:
+     Accuracy = 0.7582417582417582
+    Precision = 0.6167883211678832
+       Recall = 0.5522875816993464
+
+

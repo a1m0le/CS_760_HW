@@ -75,8 +75,8 @@ class myLogiClassifier:
         self.theta = np.zeros(self.theta_len)
         # do this many steps:
         past_gradient = None
-        step_size = self.init_step_size
-        for step in range(0, self.max_steps):
+        
+        for i in range(0, self.max_steps):
             # start gradient descent
             gradient_sum = np.zeros(self.theta_len)
             count = 0
@@ -93,8 +93,10 @@ class myLogiClassifier:
             else:
                 #TODO: tunning??
                 pass
+            step_size = self.init_step_size / (i+1)
             movement = step_size * avg_gradient
-            #print(avg_gradient)
+            #print(movement)
+            #print(np.average(avg_gradient))
             self.theta = self.theta - movement
         
 
