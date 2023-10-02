@@ -1,8 +1,8 @@
 import numpy as np
 
 
-INIT_STEP_SIZE = 0.1
-MAX_STEPS = 100
+#INIT_STEP_SIZE = 0.1
+#MAX_STEPS = 100
 
 
 class datapoint:
@@ -16,9 +16,11 @@ class datapoint:
 #TODO: add regularization(lambda)???
 class myLogiClassifier:
 
-    def __init__(self, filename):
+    def __init__(self, filename, init_step_size, max_steps):
         self.filename = filename
         self.test_range = None
+        self.init_step_size = init_step_size
+        self.max_steps = max_steps
         # process the csv file
         self.overall_data = []
         allines = None
@@ -41,18 +43,17 @@ class myLogiClassifier:
 
     
 
-    def set_test_range(self, lo, hi):
-        self.test_range = (lo, hi)
-
+    def set_test_range(self, test_range):
+        self.test_range = test_range
 
     def compute_gradient(self, dp):
         #TODO
         x = dp.point
         y = dp.label
         # firstly, compute dot product
-        theta_T_x = np.dot(self.theta, x)
+        theta_T_x = np.float128(np.dot(self.theta, x))
         # now the sigmoid
-        sigmoid = np.exp(theta_T_x) / (1 + np.exp(theta_T_x))
+        sigmoid = 1 / (1 + np.exp(-1 * theta_T_x))
         # now the inside
         inside = sigmoid - y
         # now the gradient
@@ -74,8 +75,8 @@ class myLogiClassifier:
         self.theta = np.zeros(self.theta_len)
         # do this many steps:
         past_gradient = None
-        step = INIT_STEP_SIZE
-        for step in range(0, MAX_STEPS):
+        step = self.init_step_size
+        for step in range(0, self.max_steps):
             # start gradient descent
             gradient_sum = np.zeros(self.theta_len)
             count = 0
@@ -93,19 +94,20 @@ class myLogiClassifier:
                 #TODO: tunning??
                 pass
             movement = step * avg_gradient
-            self.theta = self.thta - movement
+            #print(avg_gradient)
+            self.theta = self.theta - movement
         
 
     def predict(self):
         predictions = []
         actuals = []
-        for i in range(test_range[0], test_range[1]):
+        for i in range(self.test_range[0], self.test_range[1]):
             test_dp = self.overall_data[i]
             test_pt = test_dp.point
             test_label = test_dp.label
             # do prediction
-            theta_T_x = np.dot(self.theta, test_pt)
-            sigmoid = np.exp(theta_T_x) / (1 + np.exp(theta_T_x))
+            theta_T_x = np.float128(np.dot(self.theta, test_pt))
+            sigmoid = 1 / (1 + np.exp(-1 * theta_T_x))
             predict_label = None
             if sigmoid >= 0.5:
                 predict_label = 1
