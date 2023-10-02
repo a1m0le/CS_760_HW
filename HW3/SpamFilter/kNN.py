@@ -24,7 +24,6 @@ class neighbor_bucket:
                 return # stop. no need
             # we can add it
             heapq.heappushpop(self.data, bundle) # should be able to add in and kick out
-            assert len(self.data) == self.k
 
 
     def popular_label(self):
@@ -39,6 +38,9 @@ class neighbor_bucket:
             if label_counts[key] > max_count:
                 max_count = label_counts[key]
                 popular = key
+        # 50:50 case handling
+        if max_count == self.k/2:
+            return 0
         return popular
 
 
