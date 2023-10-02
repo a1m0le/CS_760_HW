@@ -19,7 +19,7 @@ class neighbor_bucket:
             heapq.heappush(self.data, bundle)
         else:
             # check for the top of the queue
-            neg_furthest = self.data[0]
+            neg_furthest = self.data[0][0]
             if neg_furthest > neg_dist:
                 return # stop. no need
             # we can add it
@@ -59,13 +59,15 @@ class myKNN:
         allines = None
         with open(self.filename) as f:
             allines = f.readlines()
-            print(len(allines))
         for i in range(1, len(allines)):
             dataline = allines[i]
             datapart = dataline.split(" ")[1]
             data = datapart.split(",")
             label = int(data[-1])
-            point = np.array(data[1:-1])
+            pt_floats = []
+            for j in range(1, len(data)-1):
+                pt_floats.append(float(data[j]))
+            point = np.array(pt_floats)
             dp = datapoint(point, label)
             self.overall_data.append(dp)
             
@@ -84,7 +86,7 @@ class myKNN:
             test_dp = self.overall_data[i]
             test_pt = test_dp.point
             test_label = test_dp.label
-            knn_bucket = neighbor_bucket(k)
+            knn_bucket = neighbor_bucket(self.k)
             for j in range(0, len(self.overall_data)):
                 if j >= test_range[0] and j <test_range[1]:
                     continue

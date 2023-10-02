@@ -1,0 +1,30 @@
+Fold No.1:
+     Accuracy = 0.824
+    Precision = 0.6518105849582173
+       Recall = 0.8210526315789474
+
+
+Fold No.2:
+     Accuracy = 0.8521478521478522
+    Precision = 0.6837606837606838
+       Recall = 0.8664259927797834
+
+
+Fold No.3:
+     Accuracy = 0.8601398601398601
+    Precision = 0.7177177177177178
+       Recall = 0.8385964912280702
+
+
+Fold No.4:
+     Accuracy = 0.8531468531468531
+    Precision = 0.7181008902077152
+       Recall = 0.8231292517006803
+
+
+Fold No.5:
+     Accuracy = 0.7762237762237763
+    Precision = 0.6062176165803109
+       Recall = 0.7647058823529411
+
+
