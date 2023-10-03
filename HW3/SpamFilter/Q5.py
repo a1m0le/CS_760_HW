@@ -62,8 +62,8 @@ def calculate_ROC(confi_data):
 
 if __name__=="__main__":
 
-    step_size = 1
-    maxstep = 500
+    step_size = 0.222
+    maxstep = 4000
 
     logi = myLogiClassifier("emails.csv", step_size, maxstep)
     logi.set_test_range((4000,5000))
