@@ -138,7 +138,24 @@ class myLogiClassifier:
         accuracy = (TP + TN) / (TP + FP + FN + TN)
         precision = TP / (TP + FP)
         recall = TP / (TP + FN)
-        return accuracy, precision, recall
+        return accuracy, precision, recall, predictions, actuals
+
+
+
+    def predict_ROC(self):
+        confidence_data = []
+        for i in range(self.test_range[0], self.test_range[1]):
+            test_dp = self.overall_data[i]
+            test_pt = test_dp.point
+            test_label = test_dp.label
+            # do prediction
+            theta_T_x = np.float128(np.dot(self.theta, test_pt))
+            sigmoid = 1 / (1 + np.exp(-1 * theta_T_x))
+            confidence = sigmoid
+            confi_entry = (confidence, test_label)
+            confidence_data.append(confi_entry)
+        confidence_data.sort(key=lambda entry:entry[0], reverse=True)
+        return confidence_data
 
 
 

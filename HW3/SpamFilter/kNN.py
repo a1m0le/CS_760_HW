@@ -126,8 +126,37 @@ class myKNN:
         accuracy = (TP + TN) / (TP + FP + FN + TN)
         precision = TP / (TP + FP)
         recall = TP / (TP + FN)
-        return accuracy, precision, recall
+        return accuracy, precision, recall, predictions, actuals
 
+
+    # this one is for determining ROC
+    def predict_ROC(self, test_range):
+        confidence_data = []
+        for i in range(test_range[0], test_range[1]):
+            test_dp = self.overall_data[i]
+            test_pt = test_dp.point
+            test_label = test_dp.label
+            knn_bucket = neighbor_bucket(self.k)
+            for j in range(0, len(self.overall_data)):
+                if j >= test_range[0] and j <test_range[1]:
+                    continue
+                train_dp = self.overall_data[j]
+                train_pt = train_dp.point
+                train_label = train_dp.label
+                dist = np.linalg.norm(test_pt - train_pt)
+                knn_bucket.add(dist, train_label)
+
+            neighbors = knn_bucket.data
+            ones = 0
+            for n in neighbors:
+                if n[1] == 1:
+                    ones = ones + 1
+            confidence = ones / 5
+            confi_entry = (confidence, test_label)
+            confidence_data.append(confi_entry)
+        # now we have all our predictions we can start calculations
+        confidence_data.sort(key=lambda entry:entry[0], reverse=True)
+        return confidence_data
         
 
 
