@@ -1,0 +1,30 @@
+xu@xu-virtual-machine:~/760/CS_760_HW/HW3/SpamFilter$ python3 Q2.py 
+Fold No.1:
+     Accuracy = 0.825
+    Precision = 0.6544943820224719
+       Recall = 0.8175438596491228
+
+
+Fold No.2:
+     Accuracy = 0.8521478521478522
+    Precision = 0.6837606837606838
+       Recall = 0.8664259927797834
+
+
+Fold No.3:
+     Accuracy = 0.8611388611388612
+    Precision = 0.7212121212121212
+       Recall = 0.8350877192982457
+
+
+Fold No.4:
+     Accuracy = 0.8511488511488512
+    Precision = 0.7164179104477612
+       Recall = 0.8163265306122449
+
+
+Fold No.5:
+     Accuracy = 0.7752247752247752
+    Precision = 0.6057441253263708
+       Recall = 0.7581699346405228
+

@@ -40,5 +40,6 @@ if __name__ == "__main__":
     plt.xlabel("different k values")
     plt.ylabel("Avg. Accuracy")
     plt.plot(ks, avg_accus, linestyle='--', marker='*')
+    plt.grid()
     plt.savefig("Q4_figure_ge.png")
 

@@ -63,7 +63,7 @@ def calculate_ROC(confi_data):
 if __name__=="__main__":
 
     step_size = 0.222
-    maxstep = 6000
+    maxstep = 10000
 
     logi = myLogiClassifier("emails.csv", step_size, maxstep)
     logi.set_test_range((4000,5000))
@@ -87,11 +87,12 @@ if __name__=="__main__":
     axes.set_title("ROC curve: k-NN v.s. Logistic Reg.")
     axes.set_xlabel("False Positive Rate")
     axes.set_ylabel("Avg. Accuracy")
-    logi_line, = axes.plot(logi_x, logi_y, linewidth=0.5)
+    logi_line, = axes.plot(logi_x, logi_y, linewidth=0.8)
     logi_line.set_label("Logistic Reg. (AUC="+str(logi_auc))
-    knn_line, = axes.plot(knn_x, knn_y, linewidth=0.5)
+    knn_line, = axes.plot(knn_x, knn_y, linewidth=0.8)
     knn_line.set_label("k-NN (AUC="+str(knn_auc))
     axes.legend()
+    plt.grid()
     plt.savefig("Q5_figure.png")
 
 
