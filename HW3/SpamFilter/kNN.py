@@ -25,7 +25,7 @@ class neighbor_bucket:
         else:
             # check for the top of the queue
             neg_furthest = self.data[0][0]
-            if neg_furthest > neg_dist:
+            if neg_furthest >= neg_dist:
                 return # stop. no need
             # we can add it
             heapq.heappushpop(self.data, bundle) # should be able to add in and kick out
@@ -45,7 +45,13 @@ class neighbor_bucket:
                 popular = key
         # 50:50 case handling
         if max_count == self.k/2:
-            return 0
+            max_dist = self.data[0][0]
+            max_label = self.data[0][1]
+            for i in range(1, len(self.data)):
+                if self.data[i][0] > max_dist:
+                    max_dist = self.data[i][0]
+                    max_label = self.data[i][1]
+            return max_label
         return popular
 
 
@@ -126,7 +132,7 @@ class myKNN:
         accuracy = (TP + TN) / (TP + FP + FN + TN)
         precision = TP / (TP + FP)
         recall = TP / (TP + FN)
-        return accuracy, precision, recall, predictions, actuals
+        return accuracy, precision, recall
 
 
     # this one is for determining ROC
