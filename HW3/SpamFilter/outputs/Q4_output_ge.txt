@@ -1,0 +1,5 @@
+Avg Accuracy for k=1 : 0.8329320679320679
+Avg Accuracy for k=3 : 0.8413280719280719
+Avg Accuracy for k=5 : 0.8411264735264735
+Avg Accuracy for k=7 : 0.8451222777222777
+Avg Accuracy for k=10 : 0.8551168831168832

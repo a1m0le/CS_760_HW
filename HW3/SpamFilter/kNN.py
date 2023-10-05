@@ -45,13 +45,13 @@ class neighbor_bucket:
                 popular = key
         # 50:50 case handling
         if max_count == self.k/2:
-            max_dist = self.data[0][0]
-            max_label = self.data[0][1]
-            for i in range(1, len(self.data)):
-                if self.data[i][0] > max_dist:
-                    max_dist = self.data[i][0]
-                    max_label = self.data[i][1]
-            return max_label
+            # max_dist = self.data[0][0]
+            # max_label = self.data[0][1]
+            # for i in range(1, len(self.data)):
+            #     if self.data[i][0] > max_dist:
+            #         max_dist = self.data[i][0]
+            #         max_label = self.data[i][1]
+            return 0
         return popular
 
 

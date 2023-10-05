@@ -63,7 +63,7 @@ def calculate_ROC(confi_data):
 if __name__=="__main__":
 
     step_size = 0.222
-    maxstep = 4000
+    maxstep = 6000
 
     logi = myLogiClassifier("emails.csv", step_size, maxstep)
     logi.set_test_range((4000,5000))
@@ -81,8 +81,8 @@ if __name__=="__main__":
 
     fig, axes = plt.subplots()
 
-    fig.set_figheight(8)
-    fig.set_figwidth(8)
+    fig.set_figheight(5)
+    fig.set_figwidth(5)
 
     axes.set_title("ROC curve: k-NN v.s. Logistic Reg.")
     axes.set_xlabel("False Positive Rate")

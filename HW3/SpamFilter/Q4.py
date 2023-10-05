@@ -7,7 +7,7 @@ from kNN import myKNN
 
 
 def run_cross_validation(fold_no, k, test_range, knn):
-    print("Running "+str(test_range))
+    #print("Running "+str(test_range))
     knn.config_k(k)
     accuracy, precision, recall = knn.predict(test_range) 
     return accuracy
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     ks = [1,3,5,7,10]
     avg_accus=[]
     for i in range(0, len(ks)):
-        print("For k = "+str(ks[i]))
+        #print("For k = "+str(ks[i]))
         avg = run_multiple_cv(ks[i], knn)
         avg_accus.append(avg)
 
@@ -40,6 +40,5 @@ if __name__ == "__main__":
     plt.xlabel("different k values")
     plt.ylabel("Avg. Accuracy")
     plt.plot(ks, avg_accus, linestyle='--', marker='*')
-    #plt.show()
-    #plt.savefig("Q4_figure.png")
+    plt.savefig("Q4_figure_ge.png")
 
