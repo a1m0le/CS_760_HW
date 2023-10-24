@@ -11,7 +11,7 @@ def get_prior_probs(takelog=False):
             lang_dict[fname[0]] = lang_dict[fname[0]] + 1
     ret = smooth.addi_smooth(lang_dict, 0.5)
     if takelog:
-        ret = smooth.to_log(ret)
+        smooth.to_log(ret)
     return ret
     
 
@@ -25,6 +25,6 @@ def get_prior_probs(takelog=False):
 
 
 if __name__=="__main__":
-    res = get_prior_probs()
+    res = get_prior_probs(False)
     for k in res:
         print("p^(y=" + k+") = "+str(res[k]))

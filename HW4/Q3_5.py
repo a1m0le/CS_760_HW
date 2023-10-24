@@ -29,7 +29,8 @@ if __name__=="__main__":
     log_s = Q3_3.get_span_condprob(takelog=True)
     log_j = Q3_3.get_nihon_condprob(takelog=True)
     esj = [log_e, log_s, log_j]
-    res = compute_likelihood("e10.txt", esj, retaslog=False)
+    res = compute_likelihood("e10.txt", esj, retaslog=True)
+    print("e10's log likelihood is: ( [E, S, J] )")
     print(res)
 
 
