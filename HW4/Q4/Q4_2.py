@@ -4,6 +4,9 @@ import torch
 import torchvision
 import math
 
+import matplotlib.pyplot as plt
+
+
 def load_training_data():
     # load MNIST training data
     transform_func = torchvision.transforms.Compose([
@@ -65,8 +68,12 @@ class grassyNN:
         # a cheap way to check for correct prediction
         prob_of_truth = self.sm[y].item()
         max_prob = max(self.sm).item()
-        correct = max_prob == prob_of_truth # It is correct if the truth prob is the same as the max_prob
-        return correct, loss
+        correct = max_prob == prob_of_truth # It is correct if the truth prob is the same as the max_prob and not 0
+        is_uniform = True
+        for i in range(0,len(self.sm)-1):
+            if self.sm[i] != self.sm[i+1]:
+                is_uniform = False
+        return correct and not is_uniform, loss # If it is uniform, we cannot make a correct prediction at all.
 
 
 
@@ -123,8 +130,10 @@ class grassyNN:
 def grassyTRAIN(training_data, batchlimit=None):
     # train using my derived gradient updates.
     myNN = grassyNN()
+    if batchlimit is not None and batchlimit == 0:
+        return myNN
     for epoch in range(1, hp.EPOCH+1):
-        batch_count = 1
+        batch_count = 0
         for batchdata, labels in training_data:
             accu, loss = myNN.batched_sgd(batchdata, labels)
             #print("Epoch "+str(epoch)+" batch "+str(batch_count)+" accuracy="+str(accu)+"\t loss="+str(loss)+" for this batch")
@@ -132,19 +141,19 @@ def grassyTRAIN(training_data, batchlimit=None):
             if batchlimit is not None and batch_count == batchlimit:
                 break
         # accuracy run
-        correct_ones = 0
-        total_loss = 0
-        avg_factor = 0
-        for batchdata, labels in training_data:
-            for i in range(0, len(batchdata)):
-                x = torch.flatten(batchdata[i])
-                y = labels[i].item()
-                c,l = myNN.forwardpass(x, y)
-                if c:
-                    correct_ones += 1
-                total_loss += l
-                avg_factor += 1
-        print("Epoch "+str(epoch)+": accuracy="+str(correct_ones/avg_factor)+"\t loss="+str(total_loss/avg_factor))
+        #correct_ones = 0
+        #total_loss = 0
+        #avg_factor = 0
+        #for batchdata, labels in training_data:
+        #    for i in range(0, len(batchdata)):
+        #        x = torch.flatten(batchdata[i])
+        #        y = labels[i].item()
+        #        c,l = myNN.forwardpass(x, y)
+        #        if c:
+        #            correct_ones += 1
+        #        total_loss += l
+        #        avg_factor += 1
+        #print("Epoch "+str(epoch)+": accuracy="+str(correct_ones/avg_factor)+"\t loss="+str(total_loss/avg_factor))
     return myNN       
 
 
@@ -161,8 +170,9 @@ def evaluate_grassy(testing_data, myNN):
                 correct_ones += 1
             total_loss += l
             avg_factor += 1
-    print("=====================================")
-    print("Testing Run: accuracy="+str(correct_ones/avg_factor)+"\t loss="+str(total_loss/avg_factor))
+    #print("=====================================")
+    #print("Testing Run: accuracy="+str(correct_ones/avg_factor)+"\t loss="+str(total_loss/avg_factor))
+    return correct_ones/avg_factor, total_loss/avg_factor
 
 
 
@@ -170,6 +180,25 @@ def evaluate_grassy(testing_data, myNN):
 
 if __name__=="__main__":
     train_dl = load_training_data()
-    myNN = grassyTRAIN(train_dl) 
     test_dl = load_testing_data()
-    evaluate_grassy(test_dl, myNN)
+    # train with different number of batches
+    x_axis = []
+    accu_axis = []
+    for multiplier in range(0, hp.AXIS_COUNT+1):
+        myNN = grassyTRAIN(train_dl, batchlimit=multiplier*hp.GAP) 
+        accu, loss = evaluate_grassy(test_dl, myNN)
+        x_axis.append(multiplier * hp.GAP * hp.BATCHSIZE)
+        accu_axis.append(accu)
+        precent_text = "{:.2f}%".format(multiplier*hp.GAP/len(train_dl)*100)
+        accu_text = "{:.2f}%".format(accu*100)
+        err_text = "{:.2f}%".format((1-accu)*100)
+        print("Train with "+precent_text+" of data:  Accuracy = "+accu_text+"    Error rate = "+err_text+"   Avg.loss = "+str(loss))
+    # draw the curve
+    fig, axes = plt.subplots()
+    fig.set_figheight(9)
+    fig.set_figwidth(16)
+    axes.set_xlim(0,60000)
+    axes.set_ylim(0,1)
+    axes.plot(x_axis, accu_axis, linestyle='-', marker='*')
+    plt.savefig("Q4_2_learning_cruve.png")
+

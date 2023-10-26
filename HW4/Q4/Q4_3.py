@@ -31,7 +31,7 @@ def load_testing_data():
 
 
 
-def torchyTRAIN(training_data):
+def torchyTRAIN(training_data, batchlimit=None):
     # train using my derived gradient updates.
     torchNN = nn.Sequential(
             nn.Flatten(),
@@ -42,30 +42,36 @@ def torchyTRAIN(training_data):
     pytorchSGD = torch.optim.SGD(torchNN.parameters(), lr=hp.LEARNING_RATE)
     CELoss = nn.CrossEntropyLoss() 
     torchNN.train()
+    if batchlimit is not None and batchlimit == 0:
+        return torchNN
     for epoch in range(1, hp.EPOCH+1):
         total_loss = 0
+        batchcount = 0
         for batchdata, labels in training_data:
             pytorchSGD.zero_grad()
             forward_out = torchNN(batchdata)
             loss= CELoss(forward_out, labels)
             loss.backward()
             pytorchSGD.step()
+            batchcount += 1
+            if batchlimit is not None and batchlimit == batchcount:
+                break
         # get accuracy
-        correct_ones = 0
-        total_loss = 0
-        avg_factor = 0
-        for batchdata, labels in training_data:
-            forward_out = torchNN(batchdata)
-            loss = CELoss(forward_out, labels)
-            total_loss += loss * len(batchdata)
-            avg_factor += len(batchdata)
+        #correct_ones = 0
+        #total_loss = 0
+        #avg_factor = 0
+        #for batchdata, labels in training_data:
+        #    forward_out = torchNN(batchdata)
+        #    loss = CELoss(forward_out, labels)
+        #    total_loss += loss * len(batchdata)
+        #    avg_factor += len(batchdata)
             # accuracy
-            for i in range(0, len(forward_out)):
-                maxprob = max(forward_out[i]).item() # softmax not necessary here for just accuracy.
-                truthprob =forward_out[i][labels[i].item()].item()
-                if maxprob == truthprob:
-                    correct_ones += 1
-        print("Epoch "+str(epoch)+": accuracy="+str(correct_ones/avg_factor)+"\t loss="+str((total_loss/avg_factor).item()))
+        #    for i in range(0, len(forward_out)):
+        #        maxprob = max(forward_out[i]).item() # softmax not necessary here for just accuracy.
+        #        truthprob =forward_out[i][labels[i].item()].item()
+        #        if maxprob == truthprob:
+        #            correct_ones += 1
+        #print("Epoch "+str(epoch)+": accuracy="+str(correct_ones/avg_factor)+"\t loss="+str((total_loss/avg_factor).item()))
     return torchNN       
 
 
@@ -85,20 +91,42 @@ def evaluate_torchy(testing_data, torchNN):
             total_loss += loss * len(batchdata)
             avg_factor += len(batchdata)
             # accuracy
-            for i in range(0, len(batchdata)):
-                maxprob = max(batchdata[i]).item() # softmax not necessary here for just accuracy.
-                truthprob = batchdata[i][labels[i].item()].item()
-                if maxprob == truthprob:
+            for i in range(0, len(forward_out)):
+                maxprob = max(forward_out[i]).item() # softmax not necessary here for just accuracy.
+                truthprob = forward_out[i][labels[i].item()].item()
+                uniform = True
+                for j in range(0, len(forward_out[i])-1):
+                    if forward_out[i][j] != forward_out[i][j+1]:
+                        uniform = False
+                if maxprob == truthprob and not uniform:
                     correct_ones += 1
-    print("=====================================")
-    print("Testing Run: accuracy="+str(correct_ones/avg_factor)+"\t loss="+str(total_loss/avg_factor))
-
+    #print("=====================================")
+    #print("Testing Run: accuracy="+str(correct_ones/avg_factor)+"\t loss="+str(total_loss/avg_factor))
+    return correct_ones/avg_factor, total_loss/avg_factor
 
 
 
 
 if __name__=="__main__":
     train_dl = load_training_data()
-    torchNN = torchyTRAIN(train_dl) 
     test_dl = load_testing_data()
-    evaluate_grassy(test_dl, torchNN)
+    # train with different number of batches
+    x_axis = []
+    accu_axis = []
+    for multiplier in range(0, hp.AXIS_COUNT+1):
+        torchNN = torchyTRAIN(train_dl, batchlimit=multiplier*hp.GAP)
+        accu, loss = evaluate_torchy(test_dl, torchNN)
+        x_axis.append(multiplier * hp.GAP * hp.BATCHSIZE)
+        accu_axis.append(accu)
+        precent_text = "{:.2f}%".format(multiplier*hp.GAP/len(train_dl)*100)
+        accu_text = "{:.2f}%".format(accu*100)
+        err_text = "{:.2f}%".format((1-accu)*100)
+        print("Train with "+precent_text+" of data:  Accuracy = "+accu_text+"    Error rate = "+err_text+"   Avg.loss = "+str(loss))
+    # draw the curve
+    fig, axes = plt.subplots()
+    fig.set_figheight(9)
+    fig.set_figwidth(16)
+    axes.set_xlim(0,60000)
+    axes.set_ylim(0,1)
+    axes.plot(x_axis, accu_axis, linestyle='-', marker='*')
+    plt.savefig("Q4_3_learning_cruve.png")
