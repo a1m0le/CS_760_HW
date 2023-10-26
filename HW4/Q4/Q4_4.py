@@ -32,9 +32,9 @@ def load_testing_data():
 class grassyNN:
 
     def __init__(self, randomweight=False):
-        # weights
-        self.W1 = torch.zeros(hp.D1, hp.D)
-        self.W2 = torch.zeros(hp.K, hp.D1)
+        # weights using randomweights
+        self.W1 = torch.rand(hp.D1, hp.D) * 2 - 1 # Put range to [-1,1)
+        self.W2 = torch.rand(hp.K, hp.D1) * 2 - 1
         # layers
         self.h = torch.zeros(hp.D1, 1)
         self.O = torch.zeros(hp.K, 1)
@@ -131,7 +131,6 @@ class grassyNN:
 def grassyTRAIN(training_data, batchlimit=None, verbose=False):
     # train using my derived gradient updates.
     myNN = grassyNN()
-    print(batchlimit)
     if batchlimit is not None and batchlimit == 0:
         return myNN
     for epoch in range(1, hp.EPOCH+1):
