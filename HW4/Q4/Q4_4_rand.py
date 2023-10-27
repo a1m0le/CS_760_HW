@@ -3,7 +3,6 @@ import numpy as np
 import torch
 import torchvision
 import math
-import sys
 
 import matplotlib.pyplot as plt
 
@@ -35,8 +34,8 @@ def load_testing_data():
 class grassyNN:
 
     def __init__(self):
-        # set weights random
-        self.W1 = torch.rand(hp.D1, hp.D) * 2 - 1 # Put range to [-1,1)
+        # set weights
+        self.W1 = torch.rand(hp.D1, hp.D) * 2 - 1
         self.W2 = torch.rand(hp.K, hp.D1) * 2 - 1
         # layers
         self.h = torch.zeros(hp.D1, 1)
@@ -117,91 +116,71 @@ class grassyNN:
 
 
 
-
-def grassyTRAIN(training_data, batchlimit=None, verbose=False):
-    # train using my derived gradient updates.
-    myNN = grassyNN()
-    if batchlimit is not None and batchlimit == 0:
-        return myNN
-    for epoch in range(1, hp.EPOCH+1):
-        batch_count = 0
-        for batchdata, labels in training_data:
-            myNN.batched_sgd(batchdata, labels)
-            batch_count += 1
-            if batchlimit is not None and batch_count == batchlimit:
-                break
-        if not verbose:
-            continue
-        #end of epoch accuracy run
-        correct_ones = 0
-        total_loss = 0
-        avg_factor = 0
-        for batchdata, labels in training_data:
-            for i in range(0, len(batchdata)):
-                x = torch.flatten(batchdata[i])
-                y = labels[i].item()
-                c,l = myNN.forwardpass(x, y, predict=True)
-                if c:
-                    correct_ones += 1
-                total_loss += l
-                avg_factor += 1
-        print("Epoch "+str(epoch)+": accuracy="+str(correct_ones/avg_factor)+"\t loss="+str(total_loss/avg_factor))
-    return myNN       
-
-
-def evaluate_grassy(testing_data, myNN):
+def grassyEVAL(data, myNN):
     correct_ones = 0
     total_loss = 0
     avg_factor = 0
-    for batchdata, labels in testing_data:
+    for batchdata, labels in data:
         for i in range(0, len(batchdata)):
             x = torch.flatten(batchdata[i])
             y = labels[i].item()
-            c, l = myNN.forwardpass(x,y, predict=True)
+            c, l = myNN.forwardpass(x, y, predict=True)
             if c:
                 correct_ones += 1
             total_loss += l
             avg_factor += 1
-    return correct_ones/avg_factor, total_loss/avg_factor
+    accu = correct_ones / avg_factor
+    loss = total_loss / avg_factor
+    accu_text = "{:.2f}%".format(accu*100)
+    loss_text = "{:.4f}".format(loss)
+    print("Accuracy= "+accu_text+" Loss = "+loss_text,end="")
+    return accu
+
+
+
+
+def grassyTRAIN(training_data, test_data):
+    # train using my derived gradient updates.
+    myNN = grassyNN()
+    x_axis = []
+    test_accu_axis = []
+    print("Before training: Test ",end="")
+    first_test_accu = grassyEVAL(test_data, myNN)
+    x_axis.append(0)
+    test_accu_axis.append(first_test_accu)
+    print()
+    # Now we start training
+    for epoch in range(1, hp.EPOCH+1):
+        for batchdata, labels in training_data:
+            myNN.batched_sgd(batchdata, labels)
+        #end of epoch accuracy run
+        print("Epoch "+str(epoch)+": Test ",end="")
+        test_accu = grassyEVAL(test_data, myNN)
+        x_axis.append(epoch)
+        test_accu_axis.append(test_accu)
+        print()
+    return x_axis, test_accu_axis 
+
 
 
 
 if __name__=="__main__":
     train_dl = load_training_data()
     test_dl = load_testing_data()
-    # train with different number of batches
-    x_axis = []
-    accu_axis = []
-    finaltest = False
-    starting = 0
-    if len(sys.argv) == 2:
-        if sys.argv[1] == "test":
-            finaltest = True
-            starting = hp.AXIS_COUNT
-            print("Enter final test mode")
-    for multiplier in range(starting, hp.AXIS_COUNT+1):
-        myNN = grassyTRAIN(train_dl, batchlimit=multiplier*hp.GAP, verbose=finaltest) 
-        accu, loss = evaluate_grassy(test_dl, myNN)
-        x_axis.append(multiplier * hp.GAP * hp.BATCHSIZE)
-        accu_axis.append(accu)
-        precent_text = "{:.2f}%".format(multiplier*hp.GAP/len(train_dl)*100)
-        accu_text = "{:.2f}%".format(accu*100)
-        err_text = "{:.2f}%".format((1-accu)*100)
-        print("Train with "+precent_text+" of data:  Accuracy = "+accu_text+"    Error rate = "+err_text+"   Avg.loss = "+str(loss))
+    x_axis, test_accu_axis = grassyTRAIN(train_dl, test_dl) 
     # draw the curve
     print("=========  Curve data  ===========")
     print(x_axis)
-    print(accu_axis)
-    if finaltest:
-        exit()
+    print(test_accu_axis)
+    # Now we plot
     fig, axes = plt.subplots()
     fig.set_figheight(6)
     fig.set_figwidth(10)
-    axes.set_xlim(0,60000)
+    axes.set_xlim(0,36)
     axes.set_ylim(0,1)
     axes.grid()
-    axes.set_xlabel("Number of data points used in the training")
+    axes.set_xlabel("Epoch number")
     axes.set_ylabel("Accuracy(%)")
-    axes.set_title("Accuracy on the test set when changing the size of training set\nModel = my grassyNN with initial weights sampled randomly between [0,1)\n(learning rate = "+str(hp.LEARNING_RATE)+"; batch size = "+str(hp.BATCHSIZE)+"; trained for "+str(hp.EPOCH)+" epochs each time)")
-    axes.plot(x_axis, accu_axis, linestyle='-', marker='*')
+    axes.set_title("Accuracy on the test as we train the model \nModel = my grassyNN with random initial weights\n(learning rate = "+str(hp.LEARNING_RATE)+"; batch size = "+str(hp.BATCHSIZE))
+    axes.plot(x_axis, test_accu_axis, linestyle='-', marker='*')
     plt.savefig("Q4_4_rand_learning_cruve.png")
