@@ -12,7 +12,10 @@ def load_training_data():
     # load MNIST training data
     transform_func = torchvision.transforms.Compose([
         torchvision.transforms.ToTensor(), 
-        torchvision.transforms.Normalize((0.1307,), (0.3081,))#TODO: Do we need to normalize
+        torchvision.transforms.Normalize((0.1307,), (0.3081,))
+        """
+         CITATION: Transform and normalization parameters are learned from examples from pytorch: https://github.com/pytorch/examples/blob/main/mnist/main.py
+        """
         ])
     full_dataset = torchvision.datasets.MNIST("./training_data", train=True, download=True, transform=transform_func)
     dl = torch.utils.data.DataLoader(full_dataset,batch_size=hp.BATCHSIZE)
@@ -21,7 +24,7 @@ def load_training_data():
 def load_testing_data():
     # load MNIST testing data
     transform_func = torchvision.transforms.Compose([
-        torchvision.transforms.ToTensor(), #TODO: Do we need to normalize
+        torchvision.transforms.ToTensor(),
         torchvision.transforms.Normalize((0.1307,), (0.3081,))
         ])
     full_dataset = torchvision.datasets.MNIST("./testing_data", train=False, download=True, transform=transform_func)
@@ -31,10 +34,10 @@ def load_testing_data():
 
 class grassyNN:
 
-    def __init__(self, randomweight=False):
-        # weights
-        self.W1 = torch.zeros(hp.D1, hp.D)
-        self.W2 = torch.zeros(hp.K, hp.D1)
+    def __init__(self):
+        # set weights to 1 to differentiate from Q4_4
+        self.W1 = torch.zeros(hp.D1, hp.D) + 1
+        self.W2 = torch.zeros(hp.K, hp.D1) + 1
         # layers
         self.h = torch.zeros(hp.D1, 1)
         self.O = torch.zeros(hp.K, 1)
@@ -46,25 +49,22 @@ class grassyNN:
         # batch gradients
         self.batch_dW1 = torch.zeros(hp.D1, hp.D)
         self.batch_dW2 = torch.zeros(hp.K, hp.D1)
+        # activation functions
+        self.sigma = torch.nn.Sigmoid()
+        self.soft = torch.nn.Softmax()
 
 
-    def forwardpass(self, x, y):
-        assert x.shape[0] == hp.D
+    def forwardpass(self, x, y, predict=False):
         # towards hidden layer
         h_raw = self.W1 @ x
-        assert h_raw.shape[0] == hp.D1
         # activation
-        sigma = torch.nn.Sigmoid()
-        self.h = sigma(h_raw)
-        assert self.h.shape[0] == hp.D1
+        self.h = self.sigma(h_raw)
         # towards output layer
         self.O = self.W2 @ self.h
-        assert self.O.shape[0] == hp.K
         # do the softmax
-        soft = torch.nn.Softmax(dim=0)
-        self.sm = soft(self.O)
-        assert self.sm.shape[0] == hp.K
-        # we are techniquely done here but we can still compute the loss and prediction
+        self.sm = self.soft(self.O)
+        if not predict:
+            return
         loss = -1 * math.log(self.sm[y].item()) # only the y_th iterm is 1 and the rest are zero.
         # a cheap way to check for correct prediction
         prob_of_truth = self.sm[y].item()
@@ -80,20 +80,16 @@ class grassyNN:
 
 
     def backwardpass(self, x, y):
-        assert x.shape[0] == hp.D
         y_vec = torch.zeros(hp.K)
         y_vec[y] = 1 # construct the one hot vector.
         # gradient for W2
         sm_minus_y = self.sm - y_vec
         self.dW2 = torch.outer(sm_minus_y, self.h)
-        assert self.dW2.shape[0] == hp.K and self.dW2.shape[1] == hp.D1
         # gradient for h
         self.gh = sm_minus_y @ self.W2
-        assert self.gh.shape[0] == hp.D1
         # gradient for W1
         combined_h = self.gh * self.h * (1 - self.h)
         self.dW1 = torch.outer(combined_h, x)
-        assert self.dW1.shape[0] == hp.D1 and self.dW1.shape[1] == hp.D
         # add it to the total gradients for this batch
         self.batch_dW1 = self.batch_dW1 + self.dW1
         self.batch_dW2 = self.batch_dW2 + self.dW2
@@ -103,19 +99,13 @@ class grassyNN:
         # zero the gradients
         self.batch_dW1 = torch.zeros(hp.D1, hp.D)
         self.batch_dW2 = torch.zeros(hp.K, hp.D1)
-        gotcha_count = 0
-        total_loss = 0
         # iterate
-        assert len(batchdata) == len(labels)
         for i in range(0, len(batchdata)):
             # process each input and label
             x = torch.flatten(batchdata[i])
             y = labels[i].item()
             # do the gradeint
-            c,l = self.forwardpass(x, y)
-            if c:
-                gotcha_count += 1
-            total_loss += l
+            self.forwardpass(x, y)
             self.backwardpass(x, y)
         # Now we are done, we update the weights
         avg_factor = len(batchdata)
@@ -123,7 +113,7 @@ class grassyNN:
         avg_dW2 = self.batch_dW2 / avg_factor
         self.W1 = self.W1 - hp.LEARNING_RATE * avg_dW1
         self.W2 = self.W2 - hp.LEARNING_RATE * avg_dW2
-        return gotcha_count/avg_factor, total_loss/avg_factor
+
 
 
 
@@ -131,20 +121,18 @@ class grassyNN:
 def grassyTRAIN(training_data, batchlimit=None, verbose=False):
     # train using my derived gradient updates.
     myNN = grassyNN()
-    print(batchlimit)
     if batchlimit is not None and batchlimit == 0:
         return myNN
     for epoch in range(1, hp.EPOCH+1):
         batch_count = 0
         for batchdata, labels in training_data:
-            accu, loss = myNN.batched_sgd(batchdata, labels)
-            #print("Epoch "+str(epoch)+" batch "+str(batch_count)+" accuracy="+str(accu)+"\t loss="+str(loss)+" for this batch")
+            myNN.batched_sgd(batchdata, labels)
             batch_count += 1
             if batchlimit is not None and batch_count == batchlimit:
                 break
         if not verbose:
             continue
-        #accuracy run
+        #end of epoch accuracy run
         correct_ones = 0
         total_loss = 0
         avg_factor = 0
@@ -152,7 +140,7 @@ def grassyTRAIN(training_data, batchlimit=None, verbose=False):
             for i in range(0, len(batchdata)):
                 x = torch.flatten(batchdata[i])
                 y = labels[i].item()
-                c,l = myNN.forwardpass(x, y)
+                c,l = myNN.forwardpass(x, y, predict=True)
                 if c:
                     correct_ones += 1
                 total_loss += l
@@ -169,16 +157,12 @@ def evaluate_grassy(testing_data, myNN):
         for i in range(0, len(batchdata)):
             x = torch.flatten(batchdata[i])
             y = labels[i].item()
-            c, l = myNN.forwardpass(x,y)
+            c, l = myNN.forwardpass(x,y, predict=True)
             if c:
                 correct_ones += 1
             total_loss += l
             avg_factor += 1
-    #print("=====================================")
-    #print("Testing Run: accuracy="+str(correct_ones/avg_factor)+"\t loss="+str(total_loss/avg_factor))
     return correct_ones/avg_factor, total_loss/avg_factor
-
-
 
 
 

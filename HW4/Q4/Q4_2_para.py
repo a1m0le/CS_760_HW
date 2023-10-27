@@ -29,12 +29,12 @@ def load_testing_data():
     return dl
 
 
-class grassyNN:
+class para_grassyNN:
 
     def __init__(self, randomweight=False):
-        # weights using randomweights
-        self.W1 = torch.rand(hp.D1, hp.D) * 2 - 1 # Put range to [-1,1)
-        self.W2 = torch.rand(hp.K, hp.D1) * 2 - 1
+        # weights
+        self.W1 = torch.zeros(hp.D1, hp.D)
+        self.W2 = torch.zeros(hp.K, hp.D1)
         # layers
         self.h = torch.zeros(hp.D1, 1)
         self.O = torch.zeros(hp.K, 1)
@@ -49,21 +49,16 @@ class grassyNN:
 
 
     def forwardpass(self, x, y):
-        assert x.shape[0] == hp.D
         # towards hidden layer
         h_raw = self.W1 @ x
-        assert h_raw.shape[0] == hp.D1
         # activation
         sigma = torch.nn.Sigmoid()
         self.h = sigma(h_raw)
-        assert self.h.shape[0] == hp.D1
         # towards output layer
         self.O = self.W2 @ self.h
-        assert self.O.shape[0] == hp.K
         # do the softmax
         soft = torch.nn.Softmax(dim=0)
         self.sm = soft(self.O)
-        assert self.sm.shape[0] == hp.K
         # we are techniquely done here but we can still compute the loss and prediction
         loss = -1 * math.log(self.sm[y].item()) # only the y_th iterm is 1 and the rest are zero.
         # a cheap way to check for correct prediction
@@ -79,7 +74,7 @@ class grassyNN:
 
 
 
-    def backwardpass(self, x, y):
+    def backwardpass(self, x, y, h, O, sm):
         assert x.shape[0] == hp.D
         y_vec = torch.zeros(hp.K)
         y_vec[y] = 1 # construct the one hot vector.
@@ -97,6 +92,10 @@ class grassyNN:
         # add it to the total gradients for this batch
         self.batch_dW1 = self.batch_dW1 + self.dW1
         self.batch_dW2 = self.batch_dW2 + self.dW2
+
+
+    def forward_then_backward(self, x, y):
+        #TODO
 
 
     def batched_sgd(self, batchdata, labels):
@@ -131,6 +130,7 @@ class grassyNN:
 def grassyTRAIN(training_data, batchlimit=None, verbose=False):
     # train using my derived gradient updates.
     myNN = grassyNN()
+    print(batchlimit)
     if batchlimit is not None and batchlimit == 0:
         return myNN
     for epoch in range(1, hp.EPOCH+1):
