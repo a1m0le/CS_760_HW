@@ -51,7 +51,7 @@ class grassyNN:
         self.batch_dW2 = torch.zeros(hp.K, hp.D1)
         # activation functions
         self.sigma = torch.nn.Sigmoid()
-        self.soft = torch.nn.Softmax()
+        self.soft = torch.nn.Softmax(dim=0)
 
 
     def forwardpass(self, x, y, predict=False):
