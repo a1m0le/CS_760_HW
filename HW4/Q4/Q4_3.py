@@ -93,7 +93,6 @@ def evaluate_torchy(testing_data, torchNN):
 
 
 if __name__=="__main__":
-    torch.set_default_dtype(torch.float64)
     train_dl = load_training_data()
     test_dl = load_testing_data()
     # train with different number of batches
