@@ -1,0 +1,21 @@
+xu@xu-virtual-machine:~/760/CS_760_HW/HW4/Q4$ python3 Q4_3.py 
+Train with 0.00% of data:  Accuracy = 14.58%    Error rate = 85.42%   Avg.loss = tensor(2.2891)
+Train with 6.67% of data:  Accuracy = 89.99%    Error rate = 10.01%   Avg.loss = tensor(0.3350)
+Train with 13.33% of data:  Accuracy = 91.71%    Error rate = 8.29%   Avg.loss = tensor(0.2858)
+Train with 20.00% of data:  Accuracy = 92.63%    Error rate = 7.37%   Avg.loss = tensor(0.2599)
+Train with 26.67% of data:  Accuracy = 93.81%    Error rate = 6.19%   Avg.loss = tensor(0.2184)
+Train with 33.33% of data:  Accuracy = 94.35%    Error rate = 5.65%   Avg.loss = tensor(0.1909)
+Train with 40.00% of data:  Accuracy = 95.06%    Error rate = 4.94%   Avg.loss = tensor(0.1735)
+Train with 46.67% of data:  Accuracy = 95.47%    Error rate = 4.53%   Avg.loss = tensor(0.1585)
+Train with 53.33% of data:  Accuracy = 95.77%    Error rate = 4.23%   Avg.loss = tensor(0.1465)
+Train with 60.00% of data:  Accuracy = 96.10%    Error rate = 3.90%   Avg.loss = tensor(0.1375)
+Train with 66.67% of data:  Accuracy = 96.35%    Error rate = 3.65%   Avg.loss = tensor(0.1286)
+Train with 73.33% of data:  Accuracy = 96.45%    Error rate = 3.55%   Avg.loss = tensor(0.1233)
+Train with 80.00% of data:  Accuracy = 96.77%    Error rate = 3.23%   Avg.loss = tensor(0.1119)
+Train with 86.67% of data:  Accuracy = 96.86%    Error rate = 3.14%   Avg.loss = tensor(0.1046)
+Train with 93.33% of data:  Accuracy = 97.01%    Error rate = 2.99%   Avg.loss = tensor(0.0994)
+Train with 100.00% of data:  Accuracy = 97.12%    Error rate = 2.88%   Avg.loss = tensor(0.0966)
+=========  Curve data  ===========
+[0, 4000, 8000, 12000, 16000, 20000, 24000, 28000, 32000, 36000, 40000, 44000, 48000, 52000, 56000, 60000]
+[0.1458, 0.8999, 0.9171, 0.9263, 0.9381, 0.9435, 0.9506, 0.9547, 0.9577, 0.961, 0.9635, 0.9645, 0.9677, 0.9686, 0.9701, 0.9712]
+
