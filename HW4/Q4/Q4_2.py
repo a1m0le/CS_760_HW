@@ -35,9 +35,9 @@ def load_testing_data():
 class grassyNN:
 
     def __init__(self):
-        # set weights to 0.123 to differentiate from Q4_4
-        self.W1 = torch.zeros(hp.D1, hp.D) + 0.123
-        self.W2 = torch.zeros(hp.K, hp.D1) + 0.123
+        # set weights to 1/784 to differentiate from Q4_4. Choosing this number simply because it might be interesting.
+        self.W1 = torch.zeros(hp.D1, hp.D) + 1/784
+        self.W2 = torch.zeros(hp.K, hp.D1) + 1/784
         # layers
         self.h = torch.zeros(hp.D1, 1)
         self.O = torch.zeros(hp.K, 1)
@@ -202,6 +202,6 @@ if __name__=="__main__":
     axes.grid()
     axes.set_xlabel("Number of data points used in the training")
     axes.set_ylabel("Accuracy(%)")
-    axes.set_title("Accuracy on the test set when changing the size of training set\nModel = my grassyNN with 1 as all initial weights\n(learning rate = "+str(hp.LEARNING_RATE)+"; batch size = "+str(hp.BATCHSIZE)+"; trained for "+str(hp.EPOCH)+" epochs each time)")
+    axes.set_title("Accuracy on the test set when changing the size of training set\nModel = my grassyNN with 1/784 as all initial weights\n(learning rate = "+str(hp.LEARNING_RATE)+"; batch size = "+str(hp.BATCHSIZE)+"; trained for "+str(hp.EPOCH)+" epochs each time)")
     axes.plot(x_axis, accu_axis, linestyle='-', marker='*')
     plt.savefig("Q4_2_learning_cruve.png")
