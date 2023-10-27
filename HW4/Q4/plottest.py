@@ -181,8 +181,8 @@ if __name__=="__main__":
             starting = hp.AXIS_COUNT
             print("Enter final test mode")
     for multiplier in range(starting, hp.AXIS_COUNT+1):
-        myNN = grassyTRAIN(train_dl, batchlimit=multiplier*hp.GAP, verbose=finaltest) 
-        accu, loss = evaluate_grassy(test_dl, myNN)
+        accu = torch.rand(1).item()
+        loss = 0.1
         x_axis.append(multiplier * hp.GAP * hp.BATCHSIZE)
         accu_axis.append(accu)
         precent_text = "{:.2f}%".format(multiplier*hp.GAP/len(train_dl)*100)
@@ -205,4 +205,4 @@ if __name__=="__main__":
     axes.set_ylabel("Accuracy(%)")
     axes.set_title("Accuracy on the test set when changing the size of training set\nModel = my grassyNN with 1 as all initial weights\n(learning rate = "+str(hp.LEARNING_RATE)+"; batch size = "+str(hp.BATCHSIZE)+"; trained for "+str(hp.EPOCH)+" epochs each time)")
     axes.plot(x_axis, accu_axis, linestyle='-', marker='*')
-    plt.savefig("Q4_2_learning_cruve.png")
+    plt.savefig("Test.png")

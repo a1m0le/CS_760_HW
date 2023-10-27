@@ -5,12 +5,17 @@ import torchvision
 import math
 import torch.nn as nn
 
+import matplotlib.pyplot as plt
+
 
 def load_training_data():
     # load MNIST training data
+    """
+         CITATION: Transform and normalization parameters are learned from examples from pytorch: https://github.com/pytorch/examples/blob/main/mnist/main.py
+    """
     transform_func = torchvision.transforms.Compose([
         torchvision.transforms.ToTensor(), 
-        torchvision.transforms.Normalize((0.1307,), (0.3081,))#TODO: Do we need to normalize
+        torchvision.transforms.Normalize((0.1307,), (0.3081,))
         ])
     full_dataset = torchvision.datasets.MNIST("./training_data", train=True, download=True, transform=transform_func)
     dl = torch.utils.data.DataLoader(full_dataset,batch_size=hp.BATCHSIZE)
@@ -19,7 +24,7 @@ def load_training_data():
 def load_testing_data():
     # load MNIST testing data
     transform_func = torchvision.transforms.Compose([
-        torchvision.transforms.ToTensor(), #TODO: Do we need to normalize
+        torchvision.transforms.ToTensor(),
         torchvision.transforms.Normalize((0.1307,), (0.3081,))
         ])
     full_dataset = torchvision.datasets.MNIST("./testing_data", train=False, download=True, transform=transform_func)
@@ -29,10 +34,8 @@ def load_testing_data():
 
 
 
-
-
 def torchyTRAIN(training_data, batchlimit=None):
-    # train using my derived gradient updates.
+    # train using the power of pytorch
     torchNN = nn.Sequential(
             nn.Flatten(),
             nn.Linear(784,300,bias=False),
@@ -56,22 +59,6 @@ def torchyTRAIN(training_data, batchlimit=None):
             batchcount += 1
             if batchlimit is not None and batchlimit == batchcount:
                 break
-        # get accuracy
-        #correct_ones = 0
-        #total_loss = 0
-        #avg_factor = 0
-        #for batchdata, labels in training_data:
-        #    forward_out = torchNN(batchdata)
-        #    loss = CELoss(forward_out, labels)
-        #    total_loss += loss * len(batchdata)
-        #    avg_factor += len(batchdata)
-            # accuracy
-        #    for i in range(0, len(forward_out)):
-        #        maxprob = max(forward_out[i]).item() # softmax not necessary here for just accuracy.
-        #        truthprob =forward_out[i][labels[i].item()].item()
-        #        if maxprob == truthprob:
-        #            correct_ones += 1
-        #print("Epoch "+str(epoch)+": accuracy="+str(correct_ones/avg_factor)+"\t loss="+str((total_loss/avg_factor).item()))
     return torchNN       
 
 
@@ -100,14 +87,13 @@ def evaluate_torchy(testing_data, torchNN):
                         uniform = False
                 if maxprob == truthprob and not uniform:
                     correct_ones += 1
-    #print("=====================================")
-    #print("Testing Run: accuracy="+str(correct_ones/avg_factor)+"\t loss="+str(total_loss/avg_factor))
     return correct_ones/avg_factor, total_loss/avg_factor
 
 
 
 
 if __name__=="__main__":
+    torch.set_default_dtype(torch.float64)
     train_dl = load_training_data()
     test_dl = load_testing_data()
     # train with different number of batches
@@ -123,10 +109,18 @@ if __name__=="__main__":
         err_text = "{:.2f}%".format((1-accu)*100)
         print("Train with "+precent_text+" of data:  Accuracy = "+accu_text+"    Error rate = "+err_text+"   Avg.loss = "+str(loss))
     # draw the curve
+    print("=========  Curve data  ===========")
+    print(x_axis)
+    print(accu_axis)
     fig, axes = plt.subplots()
-    fig.set_figheight(9)
-    fig.set_figwidth(16)
+    fig.set_figheight(6)
+    fig.set_figwidth(10)
     axes.set_xlim(0,60000)
     axes.set_ylim(0,1)
+    axes.grid()
+    axes.set_xlabel("Number of data points used in the training")
+    axes.set_ylabel("Accuracy(%)")
+    axes.set_title("Accuracy on the test set when changing the size of training set\nModel = torchNN with powers of PyTorch\n(learning rate = "+str(hp.LEARNING_RATE)+"; batch size = "+str(hp.BATCHSIZE)+"; trained for "+str(hp.EPOCH)+" epochs each time)")
     axes.plot(x_axis, accu_axis, linestyle='-', marker='*')
     plt.savefig("Q4_3_learning_cruve.png")
+
