@@ -11,7 +11,7 @@ import math
 def get_probability_of_x(aslog=False):
     path = "languageID"
     all_files = os.listdir(path)
-    ret = 1 / len(all_files)
+    ret = 1 / (len(all_files)/2)
     if aslog:
         return math.log(ret)
     return ret

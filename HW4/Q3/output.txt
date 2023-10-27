@@ -20,8 +20,8 @@ e10's log likelihood is: ( [E, S, J] )
 [-7841.865447060635, -8467.282044010557, -8771.433079075032]
 xu@xu-virtual-machine:~/760/CS_760_HW/HW4/Q3$ python3 Q3_6.py 
 e10's log posterior is: ( [E, S, J] )
-[-7838.869714787081, -8464.286311737003, -8768.437346801478]
-Predicted to be: e (English)with maxpos=-7838.869714787081
+[-7839.562861967641, -8464.979458917564, -8769.130493982038]
+Predicted to be: e (English)with maxpos=-7839.562861967641
 xu@xu-virtual-machine:~/760/CS_760_HW/HW4/Q3$ python3 Q3_7.py 
 For e18.txtPredicted to be: e (English)with maxpos=-4595.2552609721015
 {'e': {'e': 1, 's': 0, 'j': 0}, 's': {'e': 0, 's': 0, 'j': 0}, 'j': {'e': 0, 's': 0, 'j': 0}}
