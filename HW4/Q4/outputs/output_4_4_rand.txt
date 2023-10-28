@@ -1,0 +1,41 @@
+xu@xu-virtual-machine:~/760/CS_760_HW/HW4/Q4$ python3 Q4_4_rand.py 
+Before training: Test Accuracy= 7.51% Loss = 9.0268
+Epoch 1: Test Accuracy= 80.12% Loss = 0.7702
+Epoch 2: Test Accuracy= 84.81% Loss = 0.5849
+Epoch 3: Test Accuracy= 86.96% Loss = 0.5058
+Epoch 4: Test Accuracy= 88.11% Loss = 0.4600
+Epoch 5: Test Accuracy= 88.66% Loss = 0.4285
+Epoch 6: Test Accuracy= 89.28% Loss = 0.4047
+Epoch 7: Test Accuracy= 89.70% Loss = 0.3861
+Epoch 8: Test Accuracy= 90.01% Loss = 0.3709
+Epoch 9: Test Accuracy= 90.21% Loss = 0.3581
+Epoch 10: Test Accuracy= 90.33% Loss = 0.3472
+Epoch 11: Test Accuracy= 90.51% Loss = 0.3377
+Epoch 12: Test Accuracy= 90.79% Loss = 0.3294
+Epoch 13: Test Accuracy= 90.88% Loss = 0.3220
+Epoch 14: Test Accuracy= 91.14% Loss = 0.3154
+Epoch 15: Test Accuracy= 91.27% Loss = 0.3095
+Epoch 16: Test Accuracy= 91.42% Loss = 0.3041
+Epoch 17: Test Accuracy= 91.51% Loss = 0.2992
+Epoch 18: Test Accuracy= 91.60% Loss = 0.2947
+Epoch 19: Test Accuracy= 91.66% Loss = 0.2906
+Epoch 20: Test Accuracy= 91.77% Loss = 0.2868
+Epoch 21: Test Accuracy= 91.85% Loss = 0.2833
+Epoch 22: Test Accuracy= 91.93% Loss = 0.2801
+Epoch 23: Test Accuracy= 92.09% Loss = 0.2771
+Epoch 24: Test Accuracy= 92.16% Loss = 0.2743
+Epoch 25: Test Accuracy= 92.27% Loss = 0.2717
+Epoch 26: Test Accuracy= 92.33% Loss = 0.2692
+Epoch 27: Test Accuracy= 92.41% Loss = 0.2669
+Epoch 28: Test Accuracy= 92.47% Loss = 0.2648
+Epoch 29: Test Accuracy= 92.55% Loss = 0.2628
+Epoch 30: Test Accuracy= 92.54% Loss = 0.2609
+Epoch 31: Test Accuracy= 92.59% Loss = 0.2591
+Epoch 32: Test Accuracy= 92.61% Loss = 0.2574
+Epoch 33: Test Accuracy= 92.66% Loss = 0.2559
+Epoch 34: Test Accuracy= 92.76% Loss = 0.2544
+Epoch 35: Test Accuracy= 92.76% Loss = 0.2530
+Epoch 36: Test Accuracy= 92.77% Loss = 0.2516
+=========  Curve data  ===========
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
+[0.0751, 0.8012, 0.8481, 0.8696, 0.8811, 0.8866, 0.8928, 0.897, 0.9001, 0.9021, 0.9033, 0.9051, 0.9079, 0.9088, 0.9114, 0.9127, 0.9142, 0.9151, 0.916, 0.9166, 0.9177, 0.9185, 0.9193, 0.9209, 0.9216, 0.9227, 0.9233, 0.9241, 0.9247, 0.9255, 0.9254, 0.9259, 0.9261, 0.9266, 0.9276, 0.9276, 0.9277]
