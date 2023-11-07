@@ -24,7 +24,7 @@ Directory with the provided language data.
 contains files for answering Q4.
 
 ### .py files starting with 'Q4':
-Each of them produces the results and answers for their corresponding question number. They can also accept an argument 'test' to enter a test mode: train only on the full dataset and report test set accuracy of each epoch.
+Each of them produces the results and answers for their corresponding question number. 
 
 ### hyperparams.py
 Contains the hyper-parameters used across all questions.
