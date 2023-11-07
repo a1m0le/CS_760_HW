@@ -1,0 +1,7 @@
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/clustering$ python3 k-means.py 
+Objective for each sigma:
+[302.45851960611833, 529.8701254393789, 740.4898722711276, 1746.1388989360505, 3450.4186015356963]
+
+Accuracy for each sigma (in percentage. '%' symbol not shown here):
+[78.66666666666666, 69.33333333333334, 63.66666666666667, 53.0, 53.333333333333336]
+
