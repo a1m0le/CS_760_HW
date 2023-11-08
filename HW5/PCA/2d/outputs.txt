@@ -1,0 +1,11 @@
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/2d$ python3 BuggyPCA_2d.py 
+Reconstruction error = 44.34515418673971
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/2d$ python3 DemeanedPCA_2d.py 
+Reconstruction error = 0.5003042814256459
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/2d$ python3 NormalizedPCA_2d.py 
+Reconstruction error = 2.4736041727385336
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/2d$ python3 DRO_2d.py 
+Reconstruction error = 0.5003042814256456
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/2d$ 
+
+(These are summed. not average)
