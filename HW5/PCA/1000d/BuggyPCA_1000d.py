@@ -28,12 +28,12 @@ def load_data(filename):
 
 
 def run(X, d):
-    _, lambs, As = la.svd(X, full_matrices=False)
+    U, lambs, As = la.svd(X, full_matrices=False)
     A = As[:d]
     A = np.transpose(A)
     Z = X @ A
     ReX = Z @ np.transpose(A)
-    return Z, A, lambs, ReX
+    return Z, U, As, lambs, ReX
 
 
 def get_recon_error(X, ReX):
@@ -47,7 +47,7 @@ def get_recon_error(X, ReX):
 
 if __name__=="__main__":
     X = load_data(FILENAME)
-    Z, A, lambs, ReX = run(X, REDUCE_TO)
+    Z, U, A, lambs, ReX = run(X, REDUCE_TO)
     error = get_recon_error(X, ReX)
     print("Reconstruction error = "+str(error))
 

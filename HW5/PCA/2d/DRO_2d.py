@@ -39,14 +39,14 @@ def obtain_Y(X):
 
 def run(X, d):
     Y, bT = obtain_Y(X) 
-    _, lambs, As = la.svd(Y, full_matrices=False)
+    U, lambs, As = la.svd(Y, full_matrices=False)
     A = As[:d]
     A = np.transpose(A)
     oneone = np.zeros(X.shape[0]) + 1
     onebT = np.outer(oneone,bT)
     Z = Y @ A
     ReX = Z @ np.transpose(A) + onebT
-    return Z, A, bT, lambs, ReX
+    return Z, U, As, bT, lambs, ReX
 
 
 def visualize2D(X, ReX):
@@ -79,7 +79,7 @@ def get_recon_error(X, ReX):
 
 if __name__=="__main__":
     X = load_data(FILENAME)
-    Z, A, bT, lambs, ReX = run(X, REDUCE_TO)
+    Z, U, A, bT, lambs, ReX = run(X, REDUCE_TO)
     visualize2D(X, ReX)
     error = get_recon_error(X, ReX)
     print("Reconstruction error = "+str(error))

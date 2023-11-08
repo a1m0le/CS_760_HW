@@ -165,7 +165,7 @@ def get_objective(toprocess, centers):
             unlogged += likelihood * prior
         logged = math.log(unlogged)
         total += logged
-    return total
+    return -1*total
 
 
 

@@ -34,7 +34,7 @@ def run(X, d):
     for i in range(0, X.shape[0]):
         newX.append((X[i]-mean)/std)
     newX = np.array(newX)
-    _, lambs, As = la.svd(newX, full_matrices=False)
+    U, lambs, As = la.svd(newX, full_matrices=False)
     A = As[:d]
     A = np.transpose(A)
     Z = newX @ A
@@ -43,7 +43,7 @@ def run(X, d):
     for i in range(0, X.shape[0]):
         ReX.append((std*RawReX[i])+mean)
     ReX = np.array(ReX)
-    return Z, A, lambs, ReX
+    return Z, U, As, lambs, ReX
 
 
 
@@ -58,7 +58,7 @@ def get_recon_error(X, ReX):
 
 if __name__=="__main__":
     X = load_data(FILENAME)
-    Z, A, lambs, ReX = run(X, REDUCE_TO)
+    Z, U, A, lambs, ReX = run(X, REDUCE_TO)
     error = get_recon_error(X, ReX)
     print("Reconstruction error = "+str(error))
 
