@@ -1,0 +1,11 @@
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/1000d$ python3 BuggyPCA_1000d.py 
+Reconstruction error = 401365.69931017887
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/1000d$ python3 DemeanedPCA_1000d.py 
+Reconstruction error = 136522.97948930148
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/1000d$ python3 NormalizedPCA_1000d.py 
+Reconstruction error = 136814.29049881158
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/1000d$ python3 DRO_1000d.py 
+We should reduce it to 30-D space
+Reconstruction error = 136522.97948930145
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/1000d$ 
+

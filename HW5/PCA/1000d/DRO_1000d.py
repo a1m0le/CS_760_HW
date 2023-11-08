@@ -39,7 +39,7 @@ def obtain_Y(X):
 
 def run(X, d):
     Y, bT = obtain_Y(X) 
-    _, lambs, As = la.svd(Y, full_matrices=True)
+    _, lambs, As = la.svd(Y, full_matrices=False)
     A = As[:d]
     A = np.transpose(A)
     oneone = np.zeros(X.shape[0]) + 1
