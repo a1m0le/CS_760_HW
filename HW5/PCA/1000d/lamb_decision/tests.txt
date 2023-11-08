@@ -1,0 +1,13 @@
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/1000d$ python3 DRO_1000d.py 
+We should reduce it to 30-D space
+Reconstruction error = 136522.97948930142    # (30d)
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/1000d$ vi DRO_1000d.py 
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/1000d$ python3 DRO_1000d.py 
+We should reduce it to 30-D space
+Reconstruction error = 401527.6188019806	# (29d)
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/1000d$ vi DRO_1000d.py 
+xu@xu-virtual-machine:~/760/CS_760_HW/HW5/PCA/1000d$ python3 DRO_1000d.py 
+We should reduce it to 30-D space
+Reconstruction error = 135697.80211063696	#(31d)
+
+
