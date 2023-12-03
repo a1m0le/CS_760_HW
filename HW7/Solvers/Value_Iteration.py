@@ -60,7 +60,8 @@ class ValueIteration(AbstractSolver):
         """
 
         # you can add variables here if it is helpful
-
+#TODO: do we need to run reset()?
+#TODO: is done ever needed?
         # Update the estimated value of each state
         for each_state in range(self.env.nS):
 
@@ -69,7 +70,19 @@ class ValueIteration(AbstractSolver):
             # Do a one-step lookahead to find the best action #
             #           YOUR IMPLEMENTATION HERE              #
             ###################################################
-            raise NotImplementedError
+            statevalue = None
+            for each_action in range(self.env.nA):
+                cur_val = 0
+                for p, ns, reward, done in self.env.P[each_state][each_action]:
+                    subres = p * (reward + self.options.gamma*self.V[ns])
+                    cur_val += subres
+                if statevalue is None:
+                    statevalue = cur_val
+                elif cur_val > statevalue:
+                    statevalue = cur_val
+
+
+            self.V[each_state] = statevalue
 
         # Dont worry about this part
         self.statistics[Statistics.Rewards.value] = np.sum(self.V)
@@ -100,11 +113,26 @@ class ValueIteration(AbstractSolver):
                 self.env.nA:
                     number of actions in the environment
             """
+#TODO can we use self.env.P here?
 
             ################################
             #   YOUR IMPLEMENTATION HERE   #
             ################################
-            raise NotImplementedError
+            statevalue = None
+            greedy_action = None
+
+            for each_action in range(self.env.nA):
+                cur_val = 0
+                for p, ns, reward, done in self.env.P[state][each_action]:
+                    subres = p * (reward + self.options.gamma*self.V[ns])
+                    cur_val += subres
+                if statevalue is None:
+                    statevalue = cur_val
+                    greedy_action = each_action
+                elif cur_val > statevalue:
+                    statevalue = cur_val
+                    greedy_action = each_action
+            return greedy_action
 
         return policy_fn
 
