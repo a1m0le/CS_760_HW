@@ -14,7 +14,7 @@ from sklearn.kernel_approximation import RBFSampler
 from sklearn.linear_model import SGDRegressor
 from Solvers.Abstract_Solver import AbstractSolver
 from lib import plotting
-
+import random
 
 class QLearning(AbstractSolver):
 
@@ -45,11 +45,23 @@ class QLearning(AbstractSolver):
         """
 
         # Reset the environment
-        state = self.env.reset()
-
+        st = self.env.reset()
         ################################
         #   YOUR IMPLEMENTATION HERE   #
         ################################
+        for i in range(self.options.steps):
+            at = self.epsilon_greedy_action(st)
+            stp1, rst, done, _ = self.step(at)
+            maxQtp1 = np.max(self.Q[stp1])
+            learning_leap = rst + self.options.gamma * maxQtp1 - self.Q[st][at]
+            learning_step = learning_leap * self.options.alpha
+            new_val = self.Q[st][at] + learning_step
+            self.Q[st][at] = new_val
+            st = stp1
+            if done:
+                break # no need to any more steps. it is over
+
+
 
 
     def __str__(self):
@@ -90,7 +102,15 @@ class QLearning(AbstractSolver):
         ################################
         #   YOUR IMPLEMENTATION HERE   #
         ################################
-        return action_probs
+        
+        # test epsilon
+        roll = random.uniform()
+        if roll > self.options.epsilon:
+            return np.argmax(self.Q(state))
+        else:
+            # return a random state
+            return random.randint(0, self.env.action_space.n)
+
 
 
 class Estimator:

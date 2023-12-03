@@ -62,6 +62,7 @@ class ValueIteration(AbstractSolver):
         # you can add variables here if it is helpful
 #TODO: do we need to run reset()?
 #TODO: is done ever needed?
+        self.env.reset()
         # Update the estimated value of each state
         for each_state in range(self.env.nS):
 
